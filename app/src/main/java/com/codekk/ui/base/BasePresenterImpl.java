@@ -56,6 +56,7 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
     }
 
     protected void netWork(@NonNull Observable<M> observable) {
+        RxNetWork.getInstance().cancel(netWorkTag);
         RxNetWork.getInstance().getApi(netWorkTag, observable, this);
     }
 
