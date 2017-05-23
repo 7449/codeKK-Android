@@ -1,0 +1,47 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    compileSdkVersion = 25
+    buildToolsVersion = '25.0.0'
+    minSdkVersion = 15
+    targetSdkVersion = 25
+    versionCode = 1
+    versionName = '1.0'
+
+    supportLibraryVersion = '25.2.0'
+
+    applicationId = 'com.codekk'
+
+    greendao3xVersion = '3.2.0'
+    xAdapterVersion = '0.1.7'
+    rxNetWorkVersion = '0.1.1'
+    butterknifeVersion = '8.5.1'
+    materialDialogVersion = '0.9.4.4'
+    markdownViewVersion = '1.0.4'
+    leakcanaryVersion = 'leakcanary-android:1.5.1'
+    flexboxVersion = '0.2.6'
+}

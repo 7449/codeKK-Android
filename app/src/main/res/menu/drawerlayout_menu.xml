@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/op"
+            android:checked="true"
+            android:icon="@drawable/ic_op"
+            android:title="@string/op_title" />
+        <item
+            android:id="@+id/opa"
+            android:icon="@drawable/ic_opa"
+            android:title="@string/opa_title" />
+        <item
+            android:id="@+id/job"
+            android:icon="@drawable/ic_job"
+            android:title="@string/job_title" />
+        <item
+            android:id="@+id/blog"
+            android:icon="@drawable/ic_blog"
+            android:title="@string/blog_title" />
+        <item
+            android:id="@+id/notes"
+            android:icon="@drawable/ic_notes"
+            android:title="@string/notes_title" />
+        <item
+            android:id="@+id/recommend"
+            android:icon="@drawable/ic_recommend"
+            android:title="@string/recommend_title" />
+        <item
+            android:id="@+id/common"
+            android:icon="@drawable/ic_common"
+            android:title="@string/common_title" />
+    </group>
+</menu>
