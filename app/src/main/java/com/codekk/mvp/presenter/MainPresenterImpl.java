@@ -7,14 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.codekk.R;
 import com.codekk.mvp.view.ViewManager;
+import com.codekk.ui.base.BaseModel;
+import com.codekk.ui.base.BasePresenterImpl;
 import com.codekk.ui.fragment.BlogListFragment;
 import com.codekk.ui.fragment.JobListFragment;
 import com.codekk.ui.fragment.OpListFragment;
 import com.codekk.ui.fragment.OpaListFragment;
 import com.codekk.ui.fragment.RecommendListFragment;
-
-import com.codekk.ui.base.BaseModel;
-import com.codekk.ui.base.BasePresenterImpl;
 
 /**
  * by y on 2017/5/16
@@ -80,6 +79,25 @@ public class MainPresenterImpl extends BasePresenterImpl<ViewManager.MainView, B
             view.selectMenuFirst();
         } else {
             view.onBack();
+        }
+    }
+
+    @Override
+    public void onMainDestroy() {
+        if (null != opFragment) {
+            opFragment = null;
+        }
+        if (null != opaFragment) {
+            opaFragment = null;
+        }
+        if (null != jobFragment) {
+            jobFragment = null;
+        }
+        if (null != blogFragment) {
+            blogFragment = null;
+        }
+        if (null != recommendFragment) {
+            recommendFragment = null;
         }
     }
 

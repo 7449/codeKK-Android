@@ -21,6 +21,8 @@ public interface PresenterManager {
         void switchId(@MenuRes int menuRes);
 
         void onBackPressed();
+
+        void onMainDestroy();
     }
 
     interface OpaListPresenter {

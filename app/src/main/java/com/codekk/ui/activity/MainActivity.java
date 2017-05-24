@@ -117,6 +117,12 @@ public class MainActivity extends BaseStatusActivity<MainPresenterImpl>
     }
 
     @Override
+    protected void onDestroy() {
+        mPresenter.onMainDestroy();
+        super.onDestroy();
+    }
+
+    @Override
     public void showProgress() {
 
     }
