@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+    }
+}
+
+dependencies {
+    provided "com.android.support:appcompat-v7:$supportLibraryVersion"
+    provided "com.android.support:design:$supportLibraryVersion"
+    compile "com.github.mukeshsolanki:MarkdownView-Android:$markdownViewVersion"
+    compile("com.google.android:flexbox:$flexboxVersion", {
+        exclude group: 'com.android.support'
+    })
+}
