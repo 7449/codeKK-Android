@@ -53,13 +53,13 @@ public class SettingActivity extends BaseStatusActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
         List<SimpleMultiItem> list = new ArrayList<>();
         list.add(new SimpleMultiItem(SettingAdapter.TYPE_TITLE, -1, "开源项目"));
-        list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 0, "是否显示TAG"));
+        list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 0, "显示TAG"));
         list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 1, "github地址是否设置为超链接"));
         list.add(new SimpleMultiItem(SettingAdapter.TYPE_TITLE, -1, "源码解析"));
-        list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 2, "是否显示TAG"));
+        list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 2, "显示TAG"));
         list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 3, "解析对象连接是否设置为超链接"));
         list.add(new SimpleMultiItem(SettingAdapter.TYPE_TITLE, -1, "博客文章"));
-        list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 4, "是否显示TAG"));
+        list.add(new SimpleMultiItem(SimpleMultiItem.TYPE_ITEM, 4, "显示TAG"));
 
         mRecyclerView.setAdapter(new SettingAdapter(list));
     }

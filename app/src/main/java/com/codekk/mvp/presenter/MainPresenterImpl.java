@@ -67,6 +67,9 @@ public class MainPresenterImpl extends BasePresenterImpl<ViewManager.MainView, B
             case R.id.setting:
                 view.switchSetting();
                 break;
+            case R.id.pact:
+                view.switchPact();
+                break;
 
         }
     }

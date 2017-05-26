@@ -10,8 +10,8 @@ import com.codekk.mvp.model.OpaSearchModel;
 import com.codekk.mvp.model.ReadmeModel;
 import com.codekk.mvp.model.RecommendListModel;
 import com.codekk.mvp.model.RecommendSearchModel;
-
 import com.codekk.ui.base.BaseModel;
+
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

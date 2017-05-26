@@ -11,7 +11,6 @@ import com.codekk.mvp.model.OpaSearchModel;
 import com.codekk.mvp.model.ReadmeModel;
 import com.codekk.mvp.model.RecommendListModel;
 import com.codekk.mvp.model.RecommendSearchModel;
-
 import com.codekk.ui.base.BaseModel;
 import com.codekk.ui.base.BaseView;
 
@@ -20,8 +19,6 @@ import com.codekk.ui.base.BaseView;
  */
 
 public interface ViewManager {
-
-
 
 
     /**
@@ -70,6 +67,7 @@ public interface ViewManager {
 
         void selectMenuFirst();
 
+        void switchPact();
     }
 
 }

@@ -38,5 +38,5 @@ dependencies {
     })
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile project(':backlayout')
-    compile project(':CommonLibrary')
+    compile project(':commonLibrary')
 }

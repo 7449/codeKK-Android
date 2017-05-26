@@ -25,4 +25,16 @@
     <string name="data_empty">没有数据了</string>
     <string name="exit_app">再按一次退出</string>
     <string name="empty_view_tips">数据为空,点击重试</string>
+    <string name="pact_title">开放源代码许可</string>
+
+    <string name="xadapter">XAdapter</string>
+    <string name="rxnetwork">rxNetWork</string>
+    <string name="leakcanary">leakcanary</string>
+    <string name="materialdialog">material-dialogs</string>
+    <string name="butterknife">butterknife</string>
+    <string name="flexbox">flexbox</string>
+    <string name="markdownView">MarkdownView</string>
+    <string name="rxJava">RxJava</string>
+    <string name="retrofit">Retrofit2</string>
+    <string name="backlayout">BackLayout</string>
 </resources>

@@ -117,6 +117,11 @@ public class MainActivity extends BaseStatusActivity<MainPresenterImpl>
     }
 
     @Override
+    public void switchPact() {
+        UIUtils.startActivity(PactActivity.class);
+    }
+
+    @Override
     protected void onDestroy() {
         mPresenter.onMainDestroy();
         super.onDestroy();

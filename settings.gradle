@@ -1,1 +1,1 @@
-include ':app', ':backlayout', ':CommonLibrary'
+include ':app', ':backlayout', ':commonLibrary'

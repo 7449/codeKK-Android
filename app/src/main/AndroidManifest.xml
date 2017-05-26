@@ -28,6 +28,7 @@
         <activity android:name=".ui.activity.RecommendSearchActivity" />
         <activity android:name=".ui.activity.ReadmeActivity" />
         <activity android:name=".ui.activity.OpSearchActivity" />
+        <activity android:name=".ui.activity.PactActivity" />
     </application>
 
 </manifest>
