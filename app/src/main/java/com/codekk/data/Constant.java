@@ -17,5 +17,6 @@ public class Constant {
     public static final int TYPE_JOB = 1;
     public static final int TYPE_BLOG = 2;
     public static final int TYPE_OPA = 3;
+    public static final int TYPE_RECOMMEND = 4;
 
 }

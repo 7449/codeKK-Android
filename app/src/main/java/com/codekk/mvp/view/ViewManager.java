@@ -43,6 +43,7 @@ public interface ViewManager {
     }
 
     interface ReadmeView extends BaseView<ReadmeModel> {
+        void loadWebViewUrl();
     }
 
     interface OpListView extends BaseListView<OpListModel> {

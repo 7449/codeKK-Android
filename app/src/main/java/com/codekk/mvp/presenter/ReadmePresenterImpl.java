@@ -2,13 +2,13 @@ package com.codekk.mvp.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.ReadmeModel;
 import com.codekk.mvp.view.ViewManager;
-
-import com.codekk.ui.base.BasePresenterImpl;
-import com.codekk.data.Constant;
 import com.codekk.net.Api;
 import com.codekk.net.NetFunc;
+import com.codekk.ui.base.BasePresenterImpl;
+
 import io.reactivex.network.manager.RxNetWork;
 
 /**
@@ -47,6 +47,11 @@ public class ReadmePresenterImpl extends BasePresenterImpl<ViewManager.ReadmeVie
                         .observable(Api.OpaService.class)
                         .getOpaDetail(id)
                         .map(new NetFunc<>()));
+                break;
+            default:
+                if (view != null) {
+                    view.loadWebViewUrl();
+                }
                 break;
         }
     }

@@ -10,16 +10,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.ReadmeModel;
 import com.codekk.mvp.presenter.ReadmePresenterImpl;
 import com.codekk.mvp.view.ViewManager;
+import com.codekk.ui.base.BaseStatusActivity;
+import com.codekk.utils.UIUtils;
 import com.common.widget.SimpleMarkdownView;
 import com.common.widget.StatusLayout;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusActivity;
-import com.codekk.data.Constant;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/16
@@ -57,7 +57,7 @@ public class ReadmeActivity extends BaseStatusActivity<ReadmePresenterImpl> impl
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.readme_menu, menu);
-        if (type == Constant.TYPE_JOB || type == Constant.TYPE_BLOG) {
+        if (type == Constant.TYPE_JOB || type == Constant.TYPE_BLOG || type == Constant.TYPE_RECOMMEND) {
             menu.findItem(R.id.open_browser).setVisible(false);
         }
         return super.onCreateOptionsMenu(menu);
@@ -160,4 +160,10 @@ public class ReadmeActivity extends BaseStatusActivity<ReadmePresenterImpl> impl
         }
     }
 
+    @Override
+    public void loadWebViewUrl() {
+        if (markdownView != null) {
+            markdownView.loadUrl(detail[2]);
+        }
+    }
 }

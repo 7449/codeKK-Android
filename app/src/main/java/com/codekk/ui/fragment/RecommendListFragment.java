@@ -13,10 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.RecommendListModel;
 import com.codekk.mvp.presenter.RecommendListPresenterImpl;
 import com.codekk.mvp.view.ViewManager;
+import com.codekk.ui.activity.ReadmeActivity;
 import com.codekk.ui.activity.RecommendSearchActivity;
+import com.codekk.ui.base.BaseStatusFragment;
+import com.codekk.utils.MaterialDialogUtils;
+import com.codekk.utils.UIUtils;
 import com.common.widget.LoadMoreRecyclerView;
 import com.common.widget.StatusLayout;
 import com.xadapter.OnXBindListener;
@@ -24,9 +29,6 @@ import com.xadapter.adapter.XRecyclerViewAdapter;
 import com.xadapter.holder.XViewHolder;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusFragment;
-import com.codekk.utils.MaterialDialogUtils;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/18
@@ -57,7 +59,7 @@ public class RecommendListFragment extends BaseStatusFragment<RecommendListPrese
         mRecyclerView.setAdapter(
                 mAdapter
                         .setLayoutId(R.layout.item_recommend_list)
-                        .setOnItemClickListener((view, position, info) -> UIUtils.openBrowser(info.getUrl()))
+                        .setOnItemClickListener((view, position, info) -> ReadmeActivity.newInstance(new String[]{"0", info.getTitle(), info.getUrl()}, Constant.TYPE_RECOMMEND))
                         .onXBind(this)
         );
 
