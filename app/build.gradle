@@ -21,6 +21,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+//    dataBinding {
+//        enabled true
+//    }
 }
 
 dependencies {
@@ -39,4 +42,6 @@ dependencies {
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
     compile project(':backlayout')
     compile project(':commonLibrary')
+//    compile "com.google.dagger:dagger:$daggerVersion"
+//    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 }

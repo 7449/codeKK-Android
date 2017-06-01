@@ -14,11 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.OpListModel;
 import com.codekk.mvp.presenter.OpListPresenterImpl;
 import com.codekk.mvp.view.ViewManager;
 import com.codekk.ui.activity.OpSearchActivity;
 import com.codekk.ui.activity.ReadmeActivity;
+import com.codekk.ui.base.BaseStatusFragment;
+import com.codekk.utils.MaterialDialogUtils;
+import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
@@ -31,10 +35,6 @@ import com.xadapter.holder.XViewHolder;
 import java.util.List;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusFragment;
-import com.codekk.data.Constant;
-import com.codekk.utils.MaterialDialogUtils;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/16
@@ -77,6 +77,7 @@ public class OpListFragment extends BaseStatusFragment<OpListPresenterImpl>
 
         mRefresh.setOnRefreshListener(this);
         mRefresh.post(this::onRefresh);
+        getActivity().findViewById(R.id.toolbar).setOnClickListener(v -> mRecyclerView.smoothScrollToPosition(0));
     }
 
     @Override
