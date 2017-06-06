@@ -9,12 +9,15 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.common.R;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * by y on 2017/5/19
@@ -181,5 +184,35 @@ public class StatusLayout extends FrameLayout {
 
     private LayoutParams getParams() {
         return new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+    }
+
+
+    public void onDestroyView() {
+//        for (int i = 0; i < getChildCount(); i++) {
+//            View view = getChildAt(i);
+//            KLog.i(view.getClass().getSimpleName());
+//        }
+        List<View> allChildViews = getAllChildViews(this);
+        int size = allChildViews.size();
+        for (int i = 0; i < size; i++) {
+            View view = allChildViews.get(i);
+            if (view != null) {
+                view = null;
+            }
+        }
+    }
+
+
+    private List<View> getAllChildViews(View view) {
+        List<View> listView = new ArrayList<>();
+        if (view instanceof ViewGroup) {
+            ViewGroup vp = (ViewGroup) view;
+            for (int i = 0; i < vp.getChildCount(); i++) {
+                View viewchild = vp.getChildAt(i);
+                listView.add(viewchild);
+                listView.addAll(getAllChildViews(viewchild));
+            }
+        }
+        return listView;
     }
 }
