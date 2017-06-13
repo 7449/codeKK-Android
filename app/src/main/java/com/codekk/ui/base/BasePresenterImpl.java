@@ -79,7 +79,7 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
         this.netWorkTag = netWorkTag;
     }
 
-    public void onDestroy(int state) {
+    void onDestroy(int state) {
         switch (state) {
             case Constant.TYPE_NO_FINISH:
                 cancelNetTag();

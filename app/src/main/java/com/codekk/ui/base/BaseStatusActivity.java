@@ -28,6 +28,8 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
     protected StatusLayout mStatusView;
     private Unbinder bind;
 
+    protected int state = Constant.TYPE_NO_FINISH;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,17 +86,13 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cancelPresenter(Constant.TYPE_NO_FINISH);
-        if (bind != null) {
-            bind.unbind();
-        }
-        App.get(this).watch(this);
-    }
-
-    protected void cancelPresenter(int state) {
         if (mPresenter != null) {
             mPresenter.onDestroy(state);
             mPresenter = null;
         }
+        if (bind != null) {
+            bind.unbind();
+        }
+        App.get(this).watch(this);
     }
 }

@@ -194,21 +194,10 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
                 flexboxLayout.addView(flowText);
                 flowText.setOnClickListener(v -> {
                     finish();
+                    state = Constant.TYPE_FINISH;
                     OpSearchActivity.newInstance(tag);
                 });
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        cancelPresenter(Constant.TYPE_NO_FINISH);
-    }
-
-    @Override
-    protected void onDestroy() {
-        cancelPresenter(Constant.TYPE_FINISH);
-        super.onDestroy();
     }
 }
