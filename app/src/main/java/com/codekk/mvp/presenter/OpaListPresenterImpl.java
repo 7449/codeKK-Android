@@ -2,10 +2,11 @@ package com.codekk.mvp.presenter;
 
 import com.codekk.mvp.model.OpaListModel;
 import com.codekk.mvp.view.ViewManager;
-
-import com.codekk.ui.base.BasePresenterImpl;
 import com.codekk.net.Api;
 import com.codekk.net.NetFunc;
+import com.codekk.ui.base.BasePresenterImpl;
+import com.common.widget.StatusLayout;
+
 import io.reactivex.network.manager.RxNetWork;
 
 /**
@@ -31,6 +32,7 @@ public class OpaListPresenterImpl extends BasePresenterImpl<ViewManager.OpaListV
     public void onNetWorkSuccess(OpaListModel data) {
         if (data.getSummaryArray().isEmpty()) {
             view.noMore();
+            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

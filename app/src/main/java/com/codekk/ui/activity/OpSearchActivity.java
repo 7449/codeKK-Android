@@ -12,13 +12,15 @@ import android.text.util.Linkify;
 import android.view.View;
 
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.OpSearchModel;
 import com.codekk.mvp.presenter.OpSearchPresenterImpl;
 import com.codekk.mvp.view.ViewManager;
+import com.codekk.ui.base.BaseStatusActivity;
+import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
-import com.common.widget.StatusLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
@@ -27,9 +29,6 @@ import com.xadapter.holder.XViewHolder;
 import java.util.List;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusActivity;
-import com.codekk.data.Constant;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/17
@@ -40,16 +39,14 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
         OnXBindListener<OpSearchModel.ProjectArrayBean>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TEXT_KEY = "text";
-    private String text;
-    private int page = 1;
-
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout mRefresh;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.recyclerView)
     LoadMoreRecyclerView mRecyclerView;
-
+    private String text;
+    private int page = 1;
     private XRecyclerViewAdapter<OpSearchModel.ProjectArrayBean> mAdapter;
 
     public static void newInstance(@NonNull String text) {
@@ -68,10 +65,6 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
     protected void initCreate(@NonNull Bundle savedInstanceState) {
         mToolbar.setTitle(text);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setLoadingListener(this);
@@ -109,17 +102,18 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
 
     @Override
     public void showProgress() {
-        mRefresh.setRefreshing(true);
+        if (mRefresh != null)
+            mRefresh.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        mRefresh.setRefreshing(false);
+        if (mRefresh != null)
+            mRefresh.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(text, page = 1);
     }
 
@@ -139,7 +133,6 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
             }
             ++page;
             mAdapter.addAllData(opSearchModel.getProjectArray());
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
     }
 
@@ -148,7 +141,6 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
         if (mStatusView != null) {
             if (page == 1) {
                 mAdapter.removeAll();
-                mStatusView.setStatus(StatusLayout.ERROR);
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
             }
@@ -159,7 +151,7 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
-                mStatusView.setStatus(StatusLayout.EMPTY);
+                mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }
@@ -208,4 +200,15 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        cancelPresenter(Constant.TYPE_NO_FINISH);
+    }
+
+    @Override
+    protected void onDestroy() {
+        cancelPresenter(Constant.TYPE_FINISH);
+        super.onDestroy();
+    }
 }

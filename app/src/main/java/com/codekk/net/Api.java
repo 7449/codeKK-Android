@@ -22,28 +22,21 @@ import retrofit2.http.Query;
  */
 
 public class Api {
-    private Api() {
-    }
-
-
     public static final String BASE_API = "http://api.codekk.com/";
-
     private static final String OP_LIST_URL = "op/page/"; //获取开源项目
     private static final String OP_DETAIL_URL = "op/detail/"; //获取单个开源项目 ReadMe
     private static final String OP_SEARCH_URL = "op/search"; //搜索开源项目
-
     private static final String OPA_LIST_URL = "opa/page/"; //获取源码解析文章列表
     private static final String OPA_DETAIL_URL = "opa/detail/"; //获取单个源码解析文章详情
     private static final String OPA_SEARCH_URL = "opa/user/";
-
     private static final String JOB_LIST_URL = "job/page/"; //获取职位内推文章列表
     private static final String JOB_DETAIL_URL = "job/detail/"; //获取单个职位内推文章详情
-
     private static final String BLOG_LIST_URL = "blog/page/"; //获取博客文章列表
     private static final String BLOG_DETAIL_URL = "blog/detail/"; //获取单个博客文章详情
-
     private static final String RECOMMEND_LIST_URL = "recommend/page/"; //获取今日推荐列表
     private static final String RECOMMEND_SEARCH_URL = "recommend/user/"; //根据推荐者查询推荐列表
+    private Api() {
+    }
 
 
     public interface OpService {

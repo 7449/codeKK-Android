@@ -1,6 +1,5 @@
 package com.backlayout;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -8,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 
-class SwipeBackActivityHelper {
+class SwipeBackActivityHelper implements SwipeBackLayout.SwipeListener {
     private final Activity mActivity;
     private SwipeBackLayout mSwipeBackLayout;
 
@@ -16,28 +15,11 @@ class SwipeBackActivityHelper {
         mActivity = activity;
     }
 
-    @SuppressLint("InflateParams")
     public void onActivityCreate() {
         mActivity.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        //noinspection deprecation
         mActivity.getWindow().getDecorView().setBackgroundDrawable(null);
-        mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(
-                R.layout.swipeback_layout, null);
-        mSwipeBackLayout.addSwipeListener(new SwipeBackLayout.SwipeListener() {
-            @Override
-            public void onScrollStateChange(int state, float scrollPercent) {
-            }
-
-            @Override
-            public void onEdgeTouch(int edgeFlag) {
-                Utils.convertActivityToTranslucent(mActivity);
-            }
-
-            @Override
-            public void onScrollOverThreshold() {
-
-            }
-        });
+        mSwipeBackLayout = (SwipeBackLayout) LayoutInflater.from(mActivity).inflate(R.layout.swipeback_layout, null);
+        mSwipeBackLayout.addSwipeListener(this);
     }
 
     public void onPostCreate() {
@@ -53,5 +35,19 @@ class SwipeBackActivityHelper {
 
     public SwipeBackLayout getSwipeBackLayout() {
         return mSwipeBackLayout;
+    }
+
+    @Override
+    public void onScrollStateChange(int state, float scrollPercent) {
+    }
+
+    @Override
+    public void onEdgeTouch(int edgeFlag) {
+        Utils.convertActivityToTranslucent(mActivity);
+    }
+
+    @Override
+    public void onScrollOverThreshold() {
+
     }
 }

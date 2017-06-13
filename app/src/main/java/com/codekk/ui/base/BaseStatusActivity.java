@@ -2,6 +2,8 @@ package com.codekk.ui.base;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -10,6 +12,7 @@ import com.backlayout.SwipeBackActivity;
 import com.backlayout.SwipeBackLayout;
 import com.codekk.App;
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.common.widget.StatusLayout;
 
 import butterknife.ButterKnife;
@@ -20,19 +23,19 @@ import butterknife.Unbinder;
  */
 
 public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends SwipeBackActivity {
-    private Unbinder bind;
     protected P mPresenter;
     protected Bundle bundle;
     protected StatusLayout mStatusView;
+    private Unbinder bind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("onCreate", getClass().getSimpleName());
         mStatusView = new StatusLayout(this);
         mStatusView.setSuccessView(getLayoutId(), new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mStatusView.setEmptyView(R.layout.layout_empty_view);
         mStatusView.setErrorView(R.layout.layout_network_error);
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mStatusView.getEmptyView().setOnClickListener(v -> clickNetWork());
         mStatusView.getErrorView().setOnClickListener(v -> clickNetWork());
         setContentView(mStatusView);
@@ -40,15 +43,18 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
         mPresenter = initPresenter();
         if (mPresenter != null) {
             mPresenter.setNetWorkTag(getClass().getSimpleName());
+            mPresenter.setRootView(mStatusView);
         }
         bundle = getIntent().getExtras();
         if (bundle != null) {
             initBundle();
         }
         initCreate(savedInstanceState);
-
+        if (getSupportActionBar() != null && !TextUtils.equals(getClass().getSimpleName(), "MainActivity")) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         SwipeBackLayout swipeBackLayout = getSwipeBackLayout();
-        swipeBackLayout.setEnableGesture(false); // 暂不开启滑动返回,个人觉得滑动返回和Toolbar的返回键有重复作用.如果开启,要禁止MainActivity右滑返回
+        swipeBackLayout.setEnableGesture(true); // 暂不开启滑动返回,个人觉得滑动返回和Toolbar的返回键有重复作用.如果开启,要禁止MainActivity右滑返回
         swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
         swipeBackLayout.setEdgeDp(100);
     }
@@ -74,16 +80,21 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null) {
-            mPresenter.onDestroy();
-            mPresenter = null;
-        }
-        App.get(this).watch(this);
+        cancelPresenter(Constant.TYPE_NO_FINISH);
         if (bind != null) {
             bind.unbind();
+        }
+        App.get(this).watch(this);
+    }
+
+    protected void cancelPresenter(int state) {
+        if (mPresenter != null) {
+            mPresenter.onDestroy(state);
+            mPresenter = null;
         }
     }
 }

@@ -23,6 +23,15 @@ public class App extends Application {
     private static Context context;
     private RefWatcher install;
 
+    public static App getInstance() {
+        return (App) context;
+    }
+
+    public static RefWatcher get(Context context) {
+        App app = (App) context.getApplicationContext();
+        return app.install;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -34,16 +43,6 @@ public class App extends Application {
                 .getInstance()
                 .setBaseUrl(Api.BASE_API)
                 .setLogInterceptor(new SimpleLogInterceptor());
-    }
-
-    public static App getInstance() {
-        return (App) context;
-    }
-
-
-    public static RefWatcher get(Context context) {
-        App app = (App) context.getApplicationContext();
-        return app.install;
     }
 
 }

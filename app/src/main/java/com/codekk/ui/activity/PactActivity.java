@@ -37,9 +37,6 @@ public class PactActivity extends BaseStatusActivity implements OnXBindListener<
     protected void initCreate(@NonNull Bundle savedInstanceState) {
         mToolbar.setTitle(R.string.pact_title);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
         mAdapter = new XRecyclerViewAdapter<>();
 
         mRecyclerView.setHasFixedSize(true);

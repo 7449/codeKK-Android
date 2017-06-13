@@ -21,24 +21,18 @@ import com.codekk.ui.fragment.RecommendListFragment;
 
 public class MainPresenterImpl extends BasePresenterImpl<ViewManager.MainView, BaseModel> implements PresenterManager.MainPresenter {
 
-    private Fragment opFragment, opaFragment, jobFragment, blogFragment, recommendFragment;
-
     public static final int FIRST_FRAGMENT = -1;
-
     private static final int TYPE_OP_FRAGMENT = 0;
     private static final String TYPE_OP_TAG = "op";
-
     private static final int TYPE_OPA_FRAGMENT = 1;
     private static final String TYPE_OPA_TAG = "opa";
-
     private static final int TYPE_JOB_FRAGMENT = 2;
     private static final String TYPE_JOB_TAG = "job";
-
     private static final int TYPE_BLOG_FRAGMENT = 3;
     private static final String TYPE_BLOG_TAG = "blog";
-
     private static final int TYPE_RECOMMEND_FRAGMENT = 4;
     private static final String TYPE_RECOMMEND_TAG = "recommend";
+    private Fragment opFragment, opaFragment, jobFragment, blogFragment, recommendFragment;
 
     public MainPresenterImpl(ViewManager.MainView view) {
         super(view);

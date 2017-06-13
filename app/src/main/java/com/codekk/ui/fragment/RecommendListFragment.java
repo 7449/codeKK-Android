@@ -23,7 +23,6 @@ import com.codekk.ui.base.BaseStatusFragment;
 import com.codekk.utils.MaterialDialogUtils;
 import com.codekk.utils.UIUtils;
 import com.common.widget.LoadMoreRecyclerView;
-import com.common.widget.StatusLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
 import com.xadapter.holder.XViewHolder;
@@ -105,7 +104,6 @@ public class RecommendListFragment extends BaseStatusFragment<RecommendListPrese
 
     @Override
     public void onRefresh() {
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(page = 1);
     }
 
@@ -137,7 +135,6 @@ public class RecommendListFragment extends BaseStatusFragment<RecommendListPrese
             }
             ++page;
             mAdapter.addAllData(recommendListModel.getRecommendArray());
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
     }
 
@@ -146,7 +143,6 @@ public class RecommendListFragment extends BaseStatusFragment<RecommendListPrese
         if (mStatusView != null) {
             if (page == 1) {
                 mAdapter.removeAll();
-                mStatusView.setStatus(StatusLayout.ERROR);
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
             }
@@ -157,7 +153,7 @@ public class RecommendListFragment extends BaseStatusFragment<RecommendListPrese
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
-                mStatusView.setStatus(StatusLayout.EMPTY);
+                mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }

@@ -45,9 +45,6 @@ public class SettingActivity extends BaseStatusActivity {
     protected void initCreate(@NonNull Bundle savedInstanceState) {
         mToolbar.setTitle(R.string.setting_title);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));

@@ -94,9 +94,6 @@ public class ReadmeActivity extends BaseStatusActivity<ReadmePresenterImpl> impl
         mPresenter.netWorkRequest(detail[0], type);
         mToolbar.setTitle(detail[1]);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @Override
@@ -155,7 +152,6 @@ public class ReadmeActivity extends BaseStatusActivity<ReadmePresenterImpl> impl
     @Override
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
-            mStatusView.setStatus(StatusLayout.ERROR);
             UIUtils.snackBar(mStatusView, R.string.net_error);
         }
     }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.codekk.App;
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.common.widget.StatusLayout;
 
 import butterknife.ButterKnife;
@@ -24,9 +25,9 @@ import io.reactivex.network.bus.RxBusCallBack;
 public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fragment implements RxBusCallBack<Object> {
 
     protected StatusLayout mStatusView;
-    private Unbinder bind;
     protected P mPresenter;
     protected int page;
+    private Unbinder bind;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,7 +36,6 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
             mStatusView.setSuccessView(getLayoutId());
             mStatusView.setEmptyView(R.layout.layout_empty_view);
             mStatusView.setErrorView(R.layout.layout_network_error);
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
         bind = ButterKnife.bind(this, mStatusView);
         RxBus.getInstance().register(getClass().getSimpleName(), this);
@@ -48,6 +48,7 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
         mPresenter = initPresenter();
         if (mPresenter != null) {
             mPresenter.setNetWorkTag(getClass().getSimpleName());
+            mPresenter.setRootView(mStatusView);
         }
         initActivityCreated();
         mStatusView.getEmptyView().setOnClickListener(v -> clickNetWork());
@@ -84,12 +85,12 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
         super.onDestroyView();
         RxBus.getInstance().unregister(getClass().getSimpleName());
         if (mPresenter != null) {
-            mPresenter.onDestroy();
+            mPresenter.onDestroy(Constant.TYPE_NO_FINISH);
             mPresenter = null;
         }
-        App.get(getActivity()).watch(this);
         if (bind != null) {
             bind.unbind();
         }
+        App.get(getActivity()).watch(this);
     }
 }

@@ -20,7 +20,6 @@ import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
-import com.common.widget.StatusLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
@@ -67,9 +66,6 @@ public class OpaSearchActivity extends BaseStatusActivity<OpaSearchPresenterImpl
     protected void initCreate(@NonNull Bundle savedInstanceState) {
         mToolbar.setTitle(text);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -110,17 +106,18 @@ public class OpaSearchActivity extends BaseStatusActivity<OpaSearchPresenterImpl
 
     @Override
     public void showProgress() {
-        mRefresh.setRefreshing(true);
+        if (mRefresh != null)
+            mRefresh.setRefreshing(true);
     }
 
     @Override
     public void hideProgress() {
-        mRefresh.setRefreshing(false);
+        if (mRefresh != null)
+            mRefresh.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(text, page = 1);
     }
 
@@ -140,7 +137,6 @@ public class OpaSearchActivity extends BaseStatusActivity<OpaSearchPresenterImpl
             }
             ++page;
             mAdapter.addAllData(opaSearchModel.getSummaryArray());
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
     }
 
@@ -149,7 +145,6 @@ public class OpaSearchActivity extends BaseStatusActivity<OpaSearchPresenterImpl
         if (mStatusView != null) {
             if (page == 1) {
                 mAdapter.removeAll();
-                mStatusView.setStatus(StatusLayout.ERROR);
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
             }
@@ -160,13 +155,12 @@ public class OpaSearchActivity extends BaseStatusActivity<OpaSearchPresenterImpl
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
-                mStatusView.setStatus(StatusLayout.EMPTY);
+                mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }
         }
     }
-
 
     @Override
     public void onXBind(XViewHolder holder, int position, OpaSearchModel.SummaryArrayBean summaryArrayBean) {

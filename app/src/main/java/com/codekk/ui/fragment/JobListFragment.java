@@ -5,20 +5,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.JobListModel;
 import com.codekk.mvp.presenter.JobListPresenterImpl;
 import com.codekk.mvp.view.ViewManager;
 import com.codekk.ui.activity.ReadmeActivity;
+import com.codekk.ui.base.BaseStatusFragment;
+import com.codekk.utils.UIUtils;
 import com.common.widget.LoadMoreRecyclerView;
-import com.common.widget.StatusLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
 import com.xadapter.holder.XViewHolder;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusFragment;
-import com.codekk.data.Constant;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/18.
@@ -79,7 +78,6 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
 
     @Override
     public void onRefresh() {
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(page = 1);
     }
 
@@ -111,7 +109,6 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
             }
             ++page;
             mAdapter.addAllData(opListModel.getSummaryArray());
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
     }
 
@@ -121,7 +118,6 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
         if (mStatusView != null) {
             if (page == 1) {
                 mAdapter.removeAll();
-                mStatusView.setStatus(StatusLayout.ERROR);
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
             }
@@ -132,13 +128,12 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
-                mStatusView.setStatus(StatusLayout.EMPTY);
+                mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }
         }
     }
-
     @Override
     public void onXBind(XViewHolder holder, int position, JobListModel.SummaryArrayBean summaryArrayBean) {
         holder.setTextView(R.id.tv_job_title, TextUtils.concat(summaryArrayBean.getAuthorName()));

@@ -13,15 +13,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.codekk.R;
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.OpaListModel;
 import com.codekk.mvp.presenter.OpaListPresenterImpl;
 import com.codekk.mvp.view.ViewManager;
 import com.codekk.ui.activity.OpSearchActivity;
 import com.codekk.ui.activity.ReadmeActivity;
+import com.codekk.ui.base.BaseStatusFragment;
+import com.codekk.utils.MaterialDialogUtils;
+import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
-import com.common.widget.StatusLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
@@ -30,10 +33,6 @@ import com.xadapter.holder.XViewHolder;
 import java.util.List;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusFragment;
-import com.codekk.data.Constant;
-import com.codekk.utils.MaterialDialogUtils;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/18
@@ -111,7 +110,6 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
 
     @Override
     public void onRefresh() {
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(page = 1);
     }
 
@@ -143,7 +141,6 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
             }
             ++page;
             mAdapter.addAllData(opaListModel.getSummaryArray());
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
     }
 
@@ -152,7 +149,6 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
         if (mStatusView != null) {
             if (page == 1) {
                 mAdapter.removeAll();
-                mStatusView.setStatus(StatusLayout.ERROR);
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
             }
@@ -163,7 +159,7 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
-                mStatusView.setStatus(StatusLayout.EMPTY);
+                mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }

@@ -3,6 +3,9 @@ package com.codekk.ui.base;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.codekk.data.Constant;
+import com.common.widget.StatusLayout;
+
 import io.reactivex.Observable;
 import io.reactivex.network.manager.RxNetWork;
 import io.reactivex.network.manager.RxNetWorkListener;
@@ -15,14 +18,23 @@ import io.reactivex.network.manager.RxNetWorkListener;
 public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxNetWorkListener<M> {
     public V view;
     private String netWorkTag;
+    private StatusLayout rootView;
 
     public BasePresenterImpl(V view) {
         this.view = view;
     }
 
 
+    protected void setRootViewState(int state) {
+        if (rootView == null) {
+            return;
+        }
+        rootView.setStatus(state);
+    }
+
     @Override
     public void onNetWorkStart() {
+        setRootViewState(StatusLayout.SUCCESS);
         if (view == null) {
             return;
         }
@@ -31,6 +43,7 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
 
     @Override
     public void onNetWorkError(Throwable e) {
+        setRootViewState(StatusLayout.ERROR);
         Log.i(getClass().getSimpleName(), e.toString());
         if (view == null) {
             return;
@@ -49,6 +62,7 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
 
     @Override
     public void onNetWorkSuccess(M data) {
+        setRootViewState(StatusLayout.SUCCESS);
         if (view == null) {
             return;
         }
@@ -56,7 +70,7 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
     }
 
     protected void netWork(@NonNull Observable<M> observable) {
-        RxNetWork.getInstance().cancel(netWorkTag);
+        cancelNetTag();
         RxNetWork.getInstance().getApi(netWorkTag, observable, this);
     }
 
@@ -65,10 +79,21 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
         this.netWorkTag = netWorkTag;
     }
 
-    void onDestroy() {
-        RxNetWork.getInstance().cancel(netWorkTag);
-        if (view != null) {
-            view = null;
+    public void onDestroy(int state) {
+        switch (state) {
+            case Constant.TYPE_NO_FINISH:
+                cancelNetTag();
+                break;
         }
+        if (view != null)
+            view = null;
+    }
+
+    private void cancelNetTag() {
+        RxNetWork.getInstance().cancel(netWorkTag);
+    }
+
+    void setRootView(StatusLayout rootView) {
+        this.rootView = rootView;
     }
 }

@@ -1,12 +1,13 @@
 package com.codekk.mvp.presenter;
 
+import com.codekk.data.Constant;
 import com.codekk.mvp.model.OpListModel;
 import com.codekk.mvp.view.ViewManager;
-
-import com.codekk.ui.base.BasePresenterImpl;
-import com.codekk.data.Constant;
 import com.codekk.net.Api;
 import com.codekk.net.NetFunc;
+import com.codekk.ui.base.BasePresenterImpl;
+import com.common.widget.StatusLayout;
+
 import io.reactivex.network.manager.RxNetWork;
 
 /**
@@ -32,6 +33,7 @@ public class OpListPresenterImpl extends BasePresenterImpl<ViewManager.OpListVie
     public void onNetWorkSuccess(OpListModel data) {
         if (data.getProjectArray().isEmpty()) {
             view.noMore();
+            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

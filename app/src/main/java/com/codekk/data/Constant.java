@@ -5,18 +5,19 @@ package com.codekk.data;
  */
 
 public class Constant {
-    private Constant() {
-    }
-
     public static final String OP_LIST_TYPE_ARRAY = "array";
     public static final String OP_LIST_TYPE_MAP = "map";
     public static final String OP_LIST_TYPE_MIX = "mix";
-
-
     public static final int TYPE_OP = 0;
     public static final int TYPE_JOB = 1;
     public static final int TYPE_BLOG = 2;
     public static final int TYPE_OPA = 3;
     public static final int TYPE_RECOMMEND = 4;
+
+    public static final int TYPE_FINISH = 0;
+    public static final int TYPE_NO_FINISH = 1;
+
+    private Constant() {
+    }
 
 }

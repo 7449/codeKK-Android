@@ -1,6 +1,7 @@
 package com.codekk.net;
 
 import com.codekk.ui.base.BaseModel;
+
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 

@@ -14,15 +14,14 @@ import com.codekk.R;
 import com.codekk.mvp.model.RecommendSearchModel;
 import com.codekk.mvp.presenter.RecommendSearchPresenterImpl;
 import com.codekk.mvp.view.ViewManager;
+import com.codekk.ui.base.BaseStatusActivity;
+import com.codekk.utils.UIUtils;
 import com.common.widget.LoadMoreRecyclerView;
-import com.common.widget.StatusLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
 import com.xadapter.holder.XViewHolder;
 
 import butterknife.BindView;
-import com.codekk.ui.base.BaseStatusActivity;
-import com.codekk.utils.UIUtils;
 
 /**
  * by y on 2017/5/20.
@@ -34,16 +33,14 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
 
 
     private static final String TEXT_KEY = "text";
-    private String text;
-    private int page = 1;
-
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout mRefresh;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.recyclerView)
     LoadMoreRecyclerView mRecyclerView;
-
+    private String text;
+    private int page = 1;
     private XRecyclerViewAdapter<RecommendSearchModel.RecommendArrayBean> mAdapter;
 
     public static void newInstance(@NonNull String text) {
@@ -62,9 +59,6 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
     protected void initCreate(@NonNull Bundle savedInstanceState) {
         mToolbar.setTitle(text);
         setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -100,18 +94,17 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
         return R.layout.activity_recommend_search;
     }
 
-    public void showProgress() {
+    public void showProgress() {if (mRefresh != null)
         mRefresh.setRefreshing(true);
     }
 
     @Override
-    public void hideProgress() {
+    public void hideProgress() {if (mRefresh != null)
         mRefresh.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        mStatusView.setStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(text, page = 1);
     }
 
@@ -132,7 +125,6 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
             }
             ++page;
             mAdapter.addAllData(recommendSearchModel.getRecommendArray());
-            mStatusView.setStatus(StatusLayout.SUCCESS);
         }
     }
 
@@ -141,7 +133,6 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
         if (mStatusView != null) {
             if (page == 1) {
                 mAdapter.removeAll();
-                mStatusView.setStatus(StatusLayout.ERROR);
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
             }
@@ -152,13 +143,12 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
-                mStatusView.setStatus(StatusLayout.EMPTY);
+                mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }
         }
     }
-
     @Override
     public void onXBind(XViewHolder holder, int position, RecommendSearchModel.RecommendArrayBean recommendArrayBean) {
         if (!TextUtils.isEmpty(recommendArrayBean.getTitle())) {
