@@ -40,12 +40,12 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
         mStatusView.setErrorView(R.layout.layout_network_error);
         mStatusView.getEmptyView().setOnClickListener(v -> clickNetWork());
         mStatusView.getErrorView().setOnClickListener(v -> clickNetWork());
+        setStatusViewStatus(StatusLayout.SUCCESS);
         setContentView(mStatusView);
         bind = ButterKnife.bind(this);
         mPresenter = initPresenter();
         if (mPresenter != null) {
             mPresenter.setNetWorkTag(getClass().getSimpleName());
-            mPresenter.setRootView(mStatusView);
         }
         bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -56,7 +56,7 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         SwipeBackLayout swipeBackLayout = getSwipeBackLayout();
-        swipeBackLayout.setEnableGesture(true); // 暂不开启滑动返回,个人觉得滑动返回和Toolbar的返回键有重复作用.如果开启,要禁止MainActivity右滑返回
+        swipeBackLayout.setEnableGesture(false); // 暂不开启滑动返回,个人觉得滑动返回和Toolbar的返回键有重复作用.如果开启,要禁止MainActivity右滑返回
         swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
         swipeBackLayout.setEdgeDp(100);
     }
@@ -94,5 +94,11 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
             bind.unbind();
         }
         App.get(this).watch(this);
+    }
+
+    public void setStatusViewStatus(int status) {
+        if (mStatusView != null) {
+            mStatusView.setStatus(status);
+        }
     }
 }

@@ -35,7 +35,6 @@ public class OpaSearchPresenterImpl extends BasePresenterImpl<ViewManager.OpaSea
     public void onNetWorkSuccess(OpaSearchModel data) {
         if (data.getSummaryArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

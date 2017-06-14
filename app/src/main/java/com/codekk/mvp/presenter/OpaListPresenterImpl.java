@@ -32,7 +32,6 @@ public class OpaListPresenterImpl extends BasePresenterImpl<ViewManager.OpaListV
     public void onNetWorkSuccess(OpaListModel data) {
         if (data.getSummaryArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

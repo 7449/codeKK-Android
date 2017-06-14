@@ -31,7 +31,6 @@ public class RecommendListPresenterImpl extends BasePresenterImpl<ViewManager.Re
     public void onNetWorkSuccess(RecommendListModel data) {
         if (data.getRecommendArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

@@ -31,7 +31,6 @@ public class JobListPresenterImpl extends BasePresenterImpl<ViewManager.JobListV
     public void onNetWorkSuccess(JobListModel data) {
         if (data.getSummaryArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.codekk.data.Constant;
-import com.common.widget.StatusLayout;
 
 import io.reactivex.Observable;
 import io.reactivex.network.manager.RxNetWork;
@@ -18,23 +17,14 @@ import io.reactivex.network.manager.RxNetWorkListener;
 public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxNetWorkListener<M> {
     public V view;
     private String netWorkTag;
-    private StatusLayout rootView;
 
     public BasePresenterImpl(V view) {
         this.view = view;
     }
 
 
-    protected void setRootViewState(int state) {
-        if (rootView == null) {
-            return;
-        }
-        rootView.setStatus(state);
-    }
-
     @Override
     public void onNetWorkStart() {
-        setRootViewState(StatusLayout.SUCCESS);
         if (view == null) {
             return;
         }
@@ -43,7 +33,6 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
 
     @Override
     public void onNetWorkError(Throwable e) {
-        setRootViewState(StatusLayout.ERROR);
         Log.i(getClass().getSimpleName(), e.toString());
         if (view == null) {
             return;
@@ -62,7 +51,6 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
 
     @Override
     public void onNetWorkSuccess(M data) {
-        setRootViewState(StatusLayout.SUCCESS);
         if (view == null) {
             return;
         }
@@ -91,9 +79,5 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
 
     private void cancelNetTag() {
         RxNetWork.getInstance().cancel(netWorkTag);
-    }
-
-    void setRootView(StatusLayout rootView) {
-        this.rootView = rootView;
     }
 }

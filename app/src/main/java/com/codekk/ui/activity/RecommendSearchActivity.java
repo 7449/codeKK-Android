@@ -17,6 +17,7 @@ import com.codekk.mvp.view.ViewManager;
 import com.codekk.ui.base.BaseStatusActivity;
 import com.codekk.utils.UIUtils;
 import com.common.widget.LoadMoreRecyclerView;
+import com.common.widget.StatusLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
 import com.xadapter.holder.XViewHolder;
@@ -94,17 +95,20 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
         return R.layout.activity_recommend_search;
     }
 
-    public void showProgress() {if (mRefresh != null)
-        mRefresh.setRefreshing(true);
+    public void showProgress() {
+        if (mRefresh != null)
+            mRefresh.setRefreshing(true);
     }
 
     @Override
-    public void hideProgress() {if (mRefresh != null)
-        mRefresh.setRefreshing(false);
+    public void hideProgress() {
+        if (mRefresh != null)
+            mRefresh.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
+        setStatusViewStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(text, page = 1);
     }
 
@@ -132,6 +136,7 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.ERROR);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
@@ -143,12 +148,14 @@ public class RecommendSearchActivity extends BaseStatusActivity<RecommendSearchP
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.EMPTY);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }
         }
     }
+
     @Override
     public void onXBind(XViewHolder holder, int position, RecommendSearchModel.RecommendArrayBean recommendArrayBean) {
         if (!TextUtils.isEmpty(recommendArrayBean.getTitle())) {

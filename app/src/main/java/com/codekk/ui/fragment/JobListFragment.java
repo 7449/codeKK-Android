@@ -13,6 +13,7 @@ import com.codekk.ui.activity.ReadmeActivity;
 import com.codekk.ui.base.BaseStatusFragment;
 import com.codekk.utils.UIUtils;
 import com.common.widget.LoadMoreRecyclerView;
+import com.common.widget.StatusLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
 import com.xadapter.holder.XViewHolder;
@@ -43,7 +44,7 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
     protected void initActivityCreated() {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mRecyclerView.setLoadingListener(this); //一页显示，不用分页
+        mRecyclerView.setLoadingListener(this); //一页显示，不用分页
         mAdapter = new XRecyclerViewAdapter<>();
 
         mRecyclerView.setAdapter(
@@ -78,6 +79,7 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
 
     @Override
     public void onRefresh() {
+        setStatusViewStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(page = 1);
     }
 
@@ -117,6 +119,7 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.ERROR);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
@@ -128,12 +131,14 @@ public class JobListFragment extends BaseStatusFragment<JobListPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.EMPTY);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
             }
         }
     }
+
     @Override
     public void onXBind(XViewHolder holder, int position, JobListModel.SummaryArrayBean summaryArrayBean) {
         holder.setTextView(R.id.tv_job_title, TextUtils.concat(summaryArrayBean.getAuthorName()));

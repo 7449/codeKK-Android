@@ -21,6 +21,7 @@ import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
+import com.common.widget.StatusLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
@@ -114,6 +115,7 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
 
     @Override
     public void onRefresh() {
+        setStatusViewStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(text, page = 1);
     }
 
@@ -140,6 +142,7 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.ERROR);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
@@ -151,6 +154,7 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.EMPTY);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);

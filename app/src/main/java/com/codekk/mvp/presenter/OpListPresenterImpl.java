@@ -33,7 +33,6 @@ public class OpListPresenterImpl extends BasePresenterImpl<ViewManager.OpListVie
     public void onNetWorkSuccess(OpListModel data) {
         if (data.getProjectArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

@@ -17,6 +17,7 @@ import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
+import com.common.widget.StatusLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
@@ -52,7 +53,7 @@ public class BlogListFragment extends BaseStatusFragment<BlogListPresenterImpl>
     protected void initActivityCreated() {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mRecyclerView.setLoadingListener(this); //一页显示，不用分页
+        mRecyclerView.setLoadingListener(this); //一页显示，不用分页
         mAdapter = new XRecyclerViewAdapter<>();
 
         mRecyclerView.setAdapter(
@@ -95,6 +96,7 @@ public class BlogListFragment extends BaseStatusFragment<BlogListPresenterImpl>
         if (mRefresh.isRefreshing()) {
             return;
         }
+        setStatusViewStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(page);
     }
 
@@ -125,6 +127,7 @@ public class BlogListFragment extends BaseStatusFragment<BlogListPresenterImpl>
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.ERROR);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
@@ -136,6 +139,7 @@ public class BlogListFragment extends BaseStatusFragment<BlogListPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
+                mStatusView.setStatus(StatusLayout.EMPTY);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);

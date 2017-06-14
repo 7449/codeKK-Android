@@ -34,7 +34,6 @@ public class OpSearchPresenterImpl extends BasePresenterImpl<ViewManager.OpSearc
     public void onNetWorkSuccess(OpSearchModel data) {
         if (data.getProjectArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

@@ -142,7 +142,6 @@ public class ReadmeActivity extends BaseStatusActivity<ReadmePresenterImpl> impl
         if (mStatusView != null) {
             if (!TextUtils.isEmpty(opDetailModel.getContent())) {
                 markdownView.setMarkDownText(opDetailModel.getContent());
-                mStatusView.setStatus(StatusLayout.SUCCESS);
             } else {
                 mStatusView.setStatus(StatusLayout.EMPTY);
             }
@@ -152,6 +151,7 @@ public class ReadmeActivity extends BaseStatusActivity<ReadmePresenterImpl> impl
     @Override
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
+            setStatusViewStatus(StatusLayout.ERROR);
             UIUtils.snackBar(mStatusView, R.string.net_error);
         }
     }

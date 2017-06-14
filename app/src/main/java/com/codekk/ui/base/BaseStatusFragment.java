@@ -37,6 +37,7 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
             mStatusView.setEmptyView(R.layout.layout_empty_view);
             mStatusView.setErrorView(R.layout.layout_network_error);
         }
+        setStatusViewStatus(StatusLayout.SUCCESS);
         bind = ButterKnife.bind(this, mStatusView);
         RxBus.getInstance().register(getClass().getSimpleName(), this);
         return mStatusView;
@@ -48,7 +49,6 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
         mPresenter = initPresenter();
         if (mPresenter != null) {
             mPresenter.setNetWorkTag(getClass().getSimpleName());
-            mPresenter.setRootView(mStatusView);
         }
         initActivityCreated();
         mStatusView.getEmptyView().setOnClickListener(v -> clickNetWork());
@@ -92,5 +92,11 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
             bind.unbind();
         }
         App.get(getActivity()).watch(this);
+    }
+
+    public void setStatusViewStatus(int status) {
+        if (mStatusView != null) {
+            mStatusView.setStatus(status);
+        }
     }
 }

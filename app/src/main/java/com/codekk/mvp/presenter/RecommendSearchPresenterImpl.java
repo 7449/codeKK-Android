@@ -32,7 +32,6 @@ public class RecommendSearchPresenterImpl extends BasePresenterImpl<ViewManager.
     public void onNetWorkSuccess(RecommendSearchModel data) {
         if (data.getRecommendArray().isEmpty()) {
             view.noMore();
-            setRootViewState(StatusLayout.EMPTY);
         } else {
             super.onNetWorkSuccess(data);
         }

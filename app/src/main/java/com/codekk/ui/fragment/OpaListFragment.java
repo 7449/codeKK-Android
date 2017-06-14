@@ -25,6 +25,7 @@ import com.codekk.utils.UIUtils;
 import com.common.util.SPUtils;
 import com.common.widget.FlowText;
 import com.common.widget.LoadMoreRecyclerView;
+import com.common.widget.StatusLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.xadapter.OnXBindListener;
 import com.xadapter.adapter.XRecyclerViewAdapter;
@@ -59,7 +60,7 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
         setHasOptionsMenu(true);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        mRecyclerView.setLoadingListener(this);  // 太少了,注掉上拉加载
+        mRecyclerView.setLoadingListener(this);  // 太少了,注掉上拉加载
         mAdapter = new XRecyclerViewAdapter<>();
         mRecyclerView.setAdapter(
                 mAdapter
@@ -110,6 +111,7 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
 
     @Override
     public void onRefresh() {
+        setStatusViewStatus(StatusLayout.SUCCESS);
         mPresenter.netWorkRequest(page = 1);
     }
 
@@ -148,6 +150,7 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
     public void netWorkError(Throwable e) {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.ERROR);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.net_error);
@@ -159,6 +162,7 @@ public class OpaListFragment extends BaseStatusFragment<OpaListPresenterImpl>
     public void noMore() {
         if (mStatusView != null) {
             if (page == 1) {
+                setStatusViewStatus(StatusLayout.EMPTY);
                 mAdapter.removeAll();
             } else {
                 UIUtils.snackBar(mStatusView, R.string.data_empty);
