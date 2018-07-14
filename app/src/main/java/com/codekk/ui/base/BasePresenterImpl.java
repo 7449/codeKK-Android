@@ -3,11 +3,9 @@ package com.codekk.ui.base;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.codekk.data.Constant;
-
 import io.reactivex.Observable;
-import io.reactivex.network.manager.RxNetWork;
-import io.reactivex.network.manager.RxNetWorkListener;
+import io.reactivex.network.RxNetWork;
+import io.reactivex.network.RxNetWorkListener;
 
 
 /**
@@ -67,12 +65,7 @@ public abstract class BasePresenterImpl<V extends BaseView<M>, M> implements RxN
         this.netWorkTag = netWorkTag;
     }
 
-    void onDestroy(int state) {
-        switch (state) {
-            case Constant.TYPE_NO_FINISH:
-                cancelNetTag();
-                break;
-        }
+    void onDestroy() {
         if (view != null)
             view = null;
     }

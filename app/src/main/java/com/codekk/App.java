@@ -10,7 +10,7 @@ import com.common.util.SPUtils;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
-import io.reactivex.network.manager.RxNetWork;
+import io.reactivex.network.RxNetWork;
 
 
 /**

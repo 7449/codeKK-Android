@@ -9,7 +9,8 @@ import com.codekk.net.Api;
 import com.codekk.net.NetFunc;
 import com.codekk.ui.base.BasePresenterImpl;
 
-import io.reactivex.network.manager.RxNetWork;
+import io.reactivex.network.RxNetWork;
+
 
 /**
  * by y on 2017/5/16

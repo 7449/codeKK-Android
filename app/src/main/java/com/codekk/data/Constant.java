@@ -14,9 +14,6 @@ public class Constant {
     public static final int TYPE_OPA = 3;
     public static final int TYPE_RECOMMEND = 4;
 
-    public static final int TYPE_FINISH = 0;
-    public static final int TYPE_NO_FINISH = 1;
-
     private Constant() {
     }
 

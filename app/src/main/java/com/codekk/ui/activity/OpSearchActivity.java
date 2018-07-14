@@ -197,9 +197,8 @@ public class OpSearchActivity extends BaseStatusActivity<OpSearchPresenterImpl>
                 flowText.setText(tag);
                 flexboxLayout.addView(flowText);
                 flowText.setOnClickListener(v -> {
-                    finish();
-                    state = Constant.TYPE_FINISH;
                     OpSearchActivity.newInstance(tag);
+                    finish();
                 });
             }
         }

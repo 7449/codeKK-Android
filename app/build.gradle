@@ -1,9 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
     defaultConfig {
         applicationId rootProject.applicationId
         minSdkVersion rootProject.minSdkVersion
@@ -27,21 +25,21 @@ android {
 }
 
 dependencies {
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile "com.android.support:cardview-v7:$supportLibraryVersion"
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.xadapter:xadapter:$xAdapterVersion"
-    compile "com.ydevelop:rxNetWork:$rxNetWorkVersion"
-    compile "com.squareup.leakcanary:$leakcanaryVersion"
-    compile("com.afollestad.material-dialogs:core:$materialDialogVersion", {
+    api "com.android.support:design:$supportLibraryVersion"
+    api "com.android.support:cardview-v7:$supportLibraryVersion"
+    api "com.android.support:appcompat-v7:$supportLibraryVersion"
+    api "com.xadapter:xadapter:$xAdapterVersion"
+    api "com.ydevelop:rxNetWork:$rxNetWorkVersion"
+    api "com.squareup.leakcanary:$leakcanaryVersion"
+    api("com.afollestad.material-dialogs:core:$materialDialogVersion", {
         exclude group: 'com.android.support'
     })
-    compile("com.jakewharton:butterknife:$butterknifeVersion", {
+    api("com.jakewharton:butterknife:$butterknifeVersion", {
         exclude group: 'com.android.support'
     })
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterknifeVersion"
-    compile project(':backlayout')
-    compile project(':commonLibrary')
+    api project(':backlayout')
+    api project(':commonLibrary')
 //    compile "com.google.dagger:dagger:$daggerVersion"
 //    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 }

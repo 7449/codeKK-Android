@@ -12,7 +12,6 @@ import com.backlayout.SwipeBackActivity;
 import com.backlayout.SwipeBackLayout;
 import com.codekk.App;
 import com.codekk.R;
-import com.codekk.data.Constant;
 import com.common.widget.StatusLayout;
 
 import butterknife.ButterKnife;
@@ -27,8 +26,6 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
     protected Bundle bundle;
     protected StatusLayout mStatusView;
     private Unbinder bind;
-
-    protected int state = Constant.TYPE_NO_FINISH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +84,7 @@ public abstract class BaseStatusActivity<P extends BasePresenterImpl> extends Sw
     protected void onDestroy() {
         super.onDestroy();
         if (mPresenter != null) {
-            mPresenter.onDestroy(state);
+            mPresenter.onDestroy();
             mPresenter = null;
         }
         if (bind != null) {

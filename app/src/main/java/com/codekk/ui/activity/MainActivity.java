@@ -19,6 +19,7 @@ import com.codekk.ui.base.BaseStatusActivity;
 import com.codekk.utils.UIUtils;
 
 import butterknife.BindView;
+import io.reactivex.network.RxNetWork;
 
 
 public class MainActivity extends BaseStatusActivity<MainPresenterImpl>
@@ -125,6 +126,7 @@ public class MainActivity extends BaseStatusActivity<MainPresenterImpl>
     protected void onDestroy() {
         mPresenter.onMainDestroy();
         super.onDestroy();
+        RxNetWork.getInstance().cancelAll();
     }
 
     @Override

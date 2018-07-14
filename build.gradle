@@ -3,11 +3,11 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -17,6 +17,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+        google()
     }
 }
 
@@ -25,20 +26,19 @@ task clean(type: Delete) {
 }
 
 ext {
-    compileSdkVersion = 25
-    buildToolsVersion = '25.0.0'
-    minSdkVersion = 15
+    compileSdkVersion = 27
+    minSdkVersion = 19
     targetSdkVersion = 25
     versionCode = 1
     versionName = '1.0'
 
-    supportLibraryVersion = '25.2.0'
+    supportLibraryVersion = '27.1.1'
 
     applicationId = 'com.codekk'
 
     greendao3xVersion = '3.2.0'
     xAdapterVersion = '0.1.7'
-    rxNetWorkVersion = '0.1.3'
+    rxNetWorkVersion = '0.1.8'
     butterknifeVersion = '8.5.1'
     materialDialogVersion = '0.9.4.4'
     markdownViewVersion = '1.0.4'

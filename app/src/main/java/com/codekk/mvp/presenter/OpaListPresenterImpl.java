@@ -5,9 +5,9 @@ import com.codekk.mvp.view.ViewManager;
 import com.codekk.net.Api;
 import com.codekk.net.NetFunc;
 import com.codekk.ui.base.BasePresenterImpl;
-import com.common.widget.StatusLayout;
 
-import io.reactivex.network.manager.RxNetWork;
+import io.reactivex.network.RxNetWork;
+
 
 /**
  * by y on 2017/5/18

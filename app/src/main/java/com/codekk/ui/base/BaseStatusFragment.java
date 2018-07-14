@@ -2,6 +2,7 @@ package com.codekk.ui.base;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 
 import com.codekk.App;
 import com.codekk.R;
-import com.codekk.data.Constant;
 import com.common.widget.StatusLayout;
 
 import butterknife.ButterKnife;
@@ -30,7 +30,7 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
     private Unbinder bind;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (mStatusView == null) {
             mStatusView = new StatusLayout(container.getContext());
             mStatusView.setSuccessView(getLayoutId());
@@ -85,7 +85,7 @@ public abstract class BaseStatusFragment<P extends BasePresenterImpl> extends Fr
         super.onDestroyView();
         RxBus.getInstance().unregister(getClass().getSimpleName());
         if (mPresenter != null) {
-            mPresenter.onDestroy(Constant.TYPE_NO_FINISH);
+            mPresenter.onDestroy();
             mPresenter = null;
         }
         if (bind != null) {
