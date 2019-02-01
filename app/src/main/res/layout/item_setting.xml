@@ -5,13 +5,13 @@
     android:background="?android:selectableItemBackground"
     android:padding="@dimen/setting_item_padding">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_setting_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical" />
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/cb_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

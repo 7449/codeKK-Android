@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -11,10 +14,9 @@ android {
 }
 
 dependencies {
-    compileOnly "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compileOnly "com.android.support:design:$supportLibraryVersion"
+    compileOnly "androidx.appcompat:appcompat:$appcompatVersion"
+    compileOnly "com.google.android.material:material:$materialVersion"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     api "com.github.mukeshsolanki:MarkdownView-Android:$markdownViewVersion"
-    api("com.google.android:flexbox:$flexboxVersion", {
-        exclude group: 'com.android.support'
-    })
+    api "com.google.android:flexbox:$flexboxVersion"
 }
