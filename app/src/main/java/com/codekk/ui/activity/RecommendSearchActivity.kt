@@ -1,10 +1,10 @@
 package com.codekk.ui.activity
 
 import android.os.Bundle
-import android.text.Html
 import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.R
@@ -123,7 +123,7 @@ class RecommendSearchActivity : BaseActivity<RecommendPresenterImpl>(R.layout.la
         val descView = holder.findById<AppCompatTextView>(R.id.tv_recommend_desc)
         descView.visibility = if (TextUtils.isEmpty(recommendArrayBean.desc)) View.GONE else View.VISIBLE
         if (!TextUtils.isEmpty(recommendArrayBean.desc)) {
-            descView.text = Html.fromHtml(recommendArrayBean.desc)
+            descView.text = recommendArrayBean.desc.parseAsHtml()
         }
     }
 

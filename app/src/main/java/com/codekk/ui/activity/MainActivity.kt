@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.codekk.R
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_toolbar.*
 import org.jetbrains.anko.startActivity
 
 class MainActivity : AppCompatActivity() {
@@ -21,9 +22,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(mToolbar)
-        mToolbar.setNavigationIcon(R.drawable.ic_menu)
-        mToolbar.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_menu)
+        toolbar.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         val navController = findNavController(R.id.hostFragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.op, R.id.opa, R.id.job, R.id.blog, R.id.recommend), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)

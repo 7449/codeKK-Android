@@ -10,6 +10,7 @@ import com.codekk.ext.*
 import com.xadapter.*
 import com.xadapter.adapter.XMultiAdapter
 import kotlinx.android.synthetic.main.activity_setting.*
+import kotlinx.android.synthetic.main.layout_toolbar.*
 
 /**
  * by y on 2017/5/18
@@ -22,6 +23,7 @@ class SettingActivity : AppCompatActivity() {
         toolbar.setTitle(R.string.setting_title)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
 
@@ -47,7 +49,7 @@ class SettingActivity : AppCompatActivity() {
                                 4 -> tagCheckBox.isChecked = holder.getContext().blogTagBoolean()
                             }
                             holder.itemView.setOnClickListener {
-                                it.settingItemClick(entity.itemMultiPosition, !tagCheckBox.isChecked)
+                                it.settingItemClick(entity.itemMultiPosition, tagCheckBox.isChecked)
                                 tagCheckBox.isChecked = !tagCheckBox.isChecked
                             }
                         }

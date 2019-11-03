@@ -68,7 +68,7 @@ fun Context.opTagBoolean(): Boolean = sharedPreferences().getBoolean("op_tag", t
 fun Context.opTagBoolean(value: Boolean) = sharedPreferences().edit().putBoolean("op_tag", value).apply()
 
 fun Context.opUriWebBoolean(): Boolean = sharedPreferences().getBoolean("op_uri_web", true)
-fun Context.opUriWebBoolean(value: Boolean) = sharedPreferences().edit().putBoolean("op_uri_web", value).apply()
+fun Context.opUriWebBoolean(value: Boolean) = sharedPreferences().edit().putBoolean("op_uri_web", value).commit()
 
 fun Context.opaTagBoolean(): Boolean = sharedPreferences().getBoolean("opa_tag", true)
 fun Context.opaTagBoolean(value: Boolean) = sharedPreferences().edit().putBoolean("opa_tag", value).apply()

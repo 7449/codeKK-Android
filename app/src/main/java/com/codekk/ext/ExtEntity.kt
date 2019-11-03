@@ -46,7 +46,7 @@ data class BlogListBean(@SerializedName("_id") var id: String,
                         var authorName: String,
                         var tagList: List<String>?)
 
-data class RecommendListModel(@SerializedName("summaryArray") var recommendList: List<RecommendListBean>)
+data class RecommendListModel(@SerializedName("recommendArray") var recommendList: List<RecommendListBean>)
 
 data class RecommendListBean(var url: String,
                              var title: String,

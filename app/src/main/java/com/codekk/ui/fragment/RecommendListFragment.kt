@@ -1,12 +1,12 @@
 package com.codekk.ui.fragment
 
-import android.text.Html
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
@@ -139,7 +139,7 @@ class RecommendListFragment : BaseFragment<RecommendPresenterImpl>(R.layout.layo
         val descView = holder.findById<AppCompatTextView>(R.id.tv_recommend_desc)
         descView.visibility = if (TextUtils.isEmpty(recommendArrayBean.desc)) View.GONE else View.VISIBLE
         if (!TextUtils.isEmpty(recommendArrayBean.desc)) {
-            descView.text = Html.fromHtml(recommendArrayBean.desc)
+            descView.text = recommendArrayBean.desc.parseAsHtml()
         }
     }
 
