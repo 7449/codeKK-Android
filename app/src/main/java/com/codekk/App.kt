@@ -3,19 +3,14 @@ package com.codekk
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import com.codekk.net.Api
-import com.codekk.utils.SPUtils
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import io.reactivex.network.RxNetWork
-import io.reactivex.network.SimpleRxNetOptionFactory
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 /**
  * by y on 2017/5/16
  */
-
 class App : Application() {
 
     private lateinit var install: RefWatcher
@@ -24,8 +19,10 @@ class App : Application() {
         super.onCreate()
         context = applicationContext
         install = LeakCanary.install(this)
-        SPUtils.init(applicationContext)
-        RxNetWork.initialization(object : SimpleRxNetOptionFactory(Api.BASE_API, GsonConverterFactory.create()) {})
+        RxNetWork.initOption {
+            superBaseUrl { Api.BASE_API }
+            superConverterFactory { GsonConverterFactory.create() }
+        }
     }
 
     companion object {

@@ -13,9 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 /**
  * by y on 2017/5/16
  */
-
 class LoadMoreRecyclerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : RecyclerView(context, attrs, defStyleAttr) {
-
 
     private var layoutManagerType: LAYOUT_MANAGER_TYPE? = null
     private var lastPositions: IntArray? = null
@@ -59,7 +57,7 @@ class LoadMoreRecyclerView @JvmOverloads constructor(context: Context, attrs: At
         val layoutManager = layoutManager
         val visibleItemCount = layoutManager?.childCount ?: -1
         val totalItemCount = layoutManager?.itemCount ?: -1
-        if (visibleItemCount > 0 && state == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == totalItemCount - 1) {
+        if (visibleItemCount > 0 && state == SCROLL_STATE_IDLE && lastVisibleItemPosition == totalItemCount - 1) {
             loadingListener?.onLoadMore()
         }
     }

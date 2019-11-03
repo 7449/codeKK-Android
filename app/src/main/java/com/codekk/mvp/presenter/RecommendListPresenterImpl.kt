@@ -1,9 +1,10 @@
 package com.codekk.mvp.presenter
 
+import com.codekk.Api
+import com.codekk.NetFunc
+import com.codekk.RecommendService
 import com.codekk.mvp.model.RecommendListModel
 import com.codekk.mvp.view.ViewManager
-import com.codekk.net.Api
-import com.codekk.net.NetFunc
 import com.codekk.ui.base.BasePresenterImpl
 
 import io.reactivex.network.RxNetWork
@@ -17,7 +18,7 @@ class RecommendListPresenterImpl(view: ViewManager.RecommendListView) : BasePres
 
     override fun netWorkRequest(page: Int) {
         netWork(RxNetWork
-                .observable(Api.RecommendService::class.java)
+                .observable(RecommendService::class.java)
                 .getRecommendList(page)
                 .map(NetFunc()))
     }

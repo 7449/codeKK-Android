@@ -1,10 +1,10 @@
 package com.codekk.mvp.presenter
 
 
+import com.codekk.NetFunc
+import com.codekk.OpaService
 import com.codekk.mvp.model.OpaSearchModel
 import com.codekk.mvp.view.ViewManager
-import com.codekk.net.Api
-import com.codekk.net.NetFunc
 import com.codekk.ui.base.BasePresenterImpl
 import io.reactivex.network.RxNetWork
 
@@ -16,7 +16,7 @@ class OpaSearchPresenterImpl(view: ViewManager.OpaSearchView) : BasePresenterImp
 
     override fun netWorkRequest(text: String, page: Int) {
         netWork(RxNetWork
-                .observable(Api.OpaService::class.java)
+                .observable(OpaService::class.java)
                 .getOpaSearch(text, page)
                 .map(NetFunc()))
     }

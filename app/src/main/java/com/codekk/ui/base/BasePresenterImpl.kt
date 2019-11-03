@@ -9,8 +9,6 @@ import io.reactivex.network.RxNetWorkListener
  * by y on 2017/5/16
  */
 
-class EmptyPresenterImpl : BasePresenterImpl<BaseView<Any>, Any>(null)
-
 abstract class BasePresenterImpl<V : BaseView<M>, M>(var view: V?) : RxNetWorkListener<M> {
 
     private var netWorkTag: String? = null

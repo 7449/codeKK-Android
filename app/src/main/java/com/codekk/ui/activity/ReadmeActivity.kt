@@ -5,23 +5,29 @@ import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
+import com.android.status.layout.StatusLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.mvp.model.ReadmeModel
 import com.codekk.mvp.presenter.ReadmePresenterImpl
 import com.codekk.mvp.view.ViewManager
+import com.codekk.snackBar
 import com.codekk.ui.base.BaseStatusActivity
-import com.codekk.utils.UIUtils
-import com.status.layout.StatusLayout
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_readme.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
+import org.jetbrains.anko.browse
 
 /**
  * by y on 2017/5/16
  */
 
 class ReadmeActivity : BaseStatusActivity<ReadmePresenterImpl>(), ViewManager.ReadmeView {
+
+    companion object {
+        const val KEY = "key"
+        const val TYPE = "type"
+    }
 
     private lateinit var detail: Array<String>
     private var type: Int = 0
@@ -49,12 +55,12 @@ class ReadmeActivity : BaseStatusActivity<ReadmePresenterImpl>(), ViewManager.Re
                 if (markdownView.isLoading) {
                     markdownView.reload()
                 } else {
-                    UIUtils.snackBar(activity_status_layout, R.string.net_loading)
+                    statusLayout.snackBar(R.string.net_loading)
                 }
                 true
             }
             R.id.open_browser -> {
-                UIUtils.openBrowser(detail[2])
+                browse(detail[2], true)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -113,24 +119,12 @@ class ReadmeActivity : BaseStatusActivity<ReadmePresenterImpl>(), ViewManager.Re
 
     override fun netWorkError(throwable: Throwable) {
         setStatusViewStatus(StatusLayout.ERROR)
-        UIUtils.snackBar(activity_status_layout, R.string.net_error)
+        statusLayout.snackBar(R.string.net_error)
     }
 
     override fun loadWebViewUrl() {
         if (markdownView != null) {
             markdownView.loadUrl(detail[2])
-        }
-    }
-
-    companion object {
-        private const val KEY = "key"
-        private const val TYPE = "type"
-
-        fun newInstance(detail: Array<String>, type: Int) {
-            val bundle = Bundle()
-            bundle.putStringArray(KEY, detail)
-            bundle.putInt(TYPE, type)
-            UIUtils.startActivity(ReadmeActivity::class.java, bundle)
         }
     }
 }

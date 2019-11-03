@@ -1,9 +1,9 @@
 package com.codekk.mvp.presenter
 
+import com.codekk.JobService
+import com.codekk.NetFunc
 import com.codekk.mvp.model.JobListModel
 import com.codekk.mvp.view.ViewManager
-import com.codekk.net.Api
-import com.codekk.net.NetFunc
 import com.codekk.ui.base.BasePresenterImpl
 
 import io.reactivex.network.RxNetWork
@@ -17,7 +17,7 @@ class JobListPresenterImpl(view: ViewManager.JobListView) : BasePresenterImpl<Vi
 
     override fun netWorkRequest(page: Int) {
         netWork(RxNetWork
-                .observable(Api.JobService::class.java)
+                .observable(JobService::class.java)
                 .getJobList(page)
                 .map(NetFunc()))
     }

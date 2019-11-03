@@ -1,9 +1,9 @@
 package com.codekk.mvp.presenter
 
+import com.codekk.NetFunc
+import com.codekk.OpaService
 import com.codekk.mvp.model.OpaListModel
 import com.codekk.mvp.view.ViewManager
-import com.codekk.net.Api
-import com.codekk.net.NetFunc
 import com.codekk.ui.base.BasePresenterImpl
 
 import io.reactivex.network.RxNetWork
@@ -17,7 +17,7 @@ class OpaListPresenterImpl(view: ViewManager.OpaListView) : BasePresenterImpl<Vi
 
     override fun netWorkRequest(page: Int) {
         netWork(RxNetWork
-                .observable(Api.OpaService::class.java)
+                .observable(OpaService::class.java)
                 .getOpaList(page)
                 .map(NetFunc()))
     }

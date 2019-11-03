@@ -3,28 +3,29 @@ package com.codekk.ui.fragment
 import android.text.TextUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.android.status.layout.StatusLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.mvp.model.JobListModel
 import com.codekk.mvp.presenter.JobListPresenterImpl
 import com.codekk.mvp.view.ViewManager
+import com.codekk.snackBar
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.utils.UIUtils
 import com.codekk.widget.LoadMoreRecyclerView
-import com.status.layout.StatusLayout
-import com.xadapter.OnXBindListener
-import com.xadapter.adapter.XRecyclerViewAdapter
+import com.xadapter.*
+import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
 import kotlinx.android.synthetic.main.fragment_job_list.*
+import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18.
  */
 
-class JobListFragment : BaseStatusFragment<JobListPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, OnXBindListener<JobListModel.SummaryArrayBean>, ViewManager.JobListView, LoadMoreRecyclerView.LoadMoreListener {
+class JobListFragment : BaseStatusFragment<JobListPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, ViewManager.JobListView, LoadMoreRecyclerView.LoadMoreListener {
 
-    private lateinit var mAdapter: XRecyclerViewAdapter<JobListModel.SummaryArrayBean>
+    private lateinit var mAdapter: XAdapter<JobListModel.SummaryArrayBean>
 
     override val layoutId: Int = R.layout.fragment_job_list
 
@@ -32,12 +33,17 @@ class JobListFragment : BaseStatusFragment<JobListPresenterImpl>(), SwipeRefresh
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setLoadingListener(this) //一页显示，不用分页
-        mAdapter = XRecyclerViewAdapter()
+        mAdapter = XAdapter()
 
         recyclerView.adapter = mAdapter
-                .setLayoutId(R.layout.item_job_list)
-                .setOnItemClickListener { _, _, info -> ReadmeActivity.newInstance(arrayOf(info._id, info.authorName), Constant.TYPE_JOB) }
-                .onXBind(this)
+                .setItemLayoutId(R.layout.item_job_list)
+                .setOnItemClickListener { _, _, info ->
+                    startActivity<ReadmeActivity>(
+                            ReadmeActivity.KEY to arrayOf(info._id, info.authorName),
+                            ReadmeActivity.TYPE to Constant.TYPE_JOB
+                    )
+                }
+                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -80,7 +86,7 @@ class JobListFragment : BaseStatusFragment<JobListPresenterImpl>(), SwipeRefresh
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAllData(entity.summaryArray)
+        mAdapter.addAll(entity.summaryArray)
     }
 
 
@@ -89,7 +95,7 @@ class JobListFragment : BaseStatusFragment<JobListPresenterImpl>(), SwipeRefresh
             setStatusViewStatus(StatusLayout.ERROR)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.net_error)
+            mStatusView.snackBar(R.string.net_error)
         }
     }
 
@@ -98,24 +104,18 @@ class JobListFragment : BaseStatusFragment<JobListPresenterImpl>(), SwipeRefresh
             setStatusViewStatus(StatusLayout.EMPTY)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.data_empty)
+            mStatusView.snackBar(R.string.data_empty)
         }
     }
 
-    override fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: JobListModel.SummaryArrayBean) {
-        holder.setTextView(R.id.tv_job_title, TextUtils.concat(summaryArrayBean.authorName))
-        holder.setTextView(R.id.tv_job_address, TextUtils.concat("地点：", summaryArrayBean.authorCity))
-        holder.setTextView(R.id.tv_job_expiredTime, TextUtils.concat("截止时间：", summaryArrayBean.expiredTime))
-        holder.setTextView(R.id.tv_job_summary, TextUtils.concat(summaryArrayBean.summary))
+    private fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: JobListModel.SummaryArrayBean) {
+        holder.setText(R.id.tv_job_title, TextUtils.concat(summaryArrayBean.authorName))
+        holder.setText(R.id.tv_job_address, TextUtils.concat("地点：", summaryArrayBean.authorCity))
+        holder.setText(R.id.tv_job_expiredTime, TextUtils.concat("截止时间：", summaryArrayBean.expiredTime))
+        holder.setText(R.id.tv_job_summary, TextUtils.concat(summaryArrayBean.summary))
     }
 
     override fun onBusNext(entity: Any) {
         mAdapter.notifyDataSetChanged()
-    }
-
-    companion object {
-        fun newInstance(): JobListFragment {
-            return JobListFragment()
-        }
     }
 }

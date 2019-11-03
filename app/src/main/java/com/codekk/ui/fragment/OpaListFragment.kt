@@ -9,7 +9,8 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.codekk.Constant
+import com.android.status.layout.StatusLayout
+import com.codekk.*
 import com.codekk.R
 import com.codekk.mvp.model.OpaListModel
 import com.codekk.mvp.presenter.OpaListPresenterImpl
@@ -17,25 +18,22 @@ import com.codekk.mvp.view.ViewManager
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.utils.MaterialDialogUtils
-import com.codekk.utils.SPUtils
-import com.codekk.utils.UIUtils
 import com.codekk.widget.FlowText
 import com.codekk.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
-import com.status.layout.StatusLayout
-import com.xadapter.OnXBindListener
-import com.xadapter.adapter.XRecyclerViewAdapter
+import com.xadapter.*
+import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
 import kotlinx.android.synthetic.main.fragment_opa_list.*
+import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18
  */
 
-class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.OpaListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener, OnXBindListener<OpaListModel.SummaryArrayBean> {
+class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.OpaListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
-    private lateinit var mAdapter: XRecyclerViewAdapter<OpaListModel.SummaryArrayBean>
+    private lateinit var mAdapter: XAdapter<OpaListModel.SummaryArrayBean>
 
     override val layoutId: Int = R.layout.fragment_opa_list
 
@@ -44,11 +42,16 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setLoadingListener(this)  // 太少了,注掉上拉加载
-        mAdapter = XRecyclerViewAdapter()
+        mAdapter = XAdapter()
         recyclerView.adapter = mAdapter
-                .setLayoutId(R.layout.item_opa_list)
-                .setOnItemClickListener { _, _, info -> ReadmeActivity.newInstance(arrayOf(info._id, info.projectName, info.projectUrl), Constant.TYPE_OPA) }
-                .onXBind(this)
+                .setItemLayoutId(R.layout.item_opa_list)
+                .setOnItemClickListener { _, _, info ->
+                    startActivity<ReadmeActivity>(
+                            ReadmeActivity.KEY to arrayOf(info._id, info.projectName, info.projectUrl),
+                            ReadmeActivity.TYPE to Constant.TYPE_OPA
+                    )
+                }
+                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -70,7 +73,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
         activity?.let {
             return when (item.itemId) {
                 R.id.open_search -> {
-                    MaterialDialogUtils.openSearch(it, R.string.search_opa_hint) { s -> OpSearchActivity.newInstance(s) }
+                    it.openSearch(R.string.search_opa_hint) { s -> startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to s) }
                     return true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -108,7 +111,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAllData(entity.summaryArray)
+        mAdapter.addAll(entity.summaryArray)
     }
 
     override fun netWorkError(throwable: Throwable) {
@@ -116,7 +119,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
             setStatusViewStatus(StatusLayout.ERROR)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.net_error)
+            mStatusView.snackBar(R.string.net_error)
         }
     }
 
@@ -125,24 +128,24 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
             setStatusViewStatus(StatusLayout.EMPTY)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.data_empty)
+            mStatusView.snackBar(R.string.data_empty)
         }
     }
 
 
-    override fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: OpaListModel.SummaryArrayBean) {
-        holder.setTextView(R.id.tv_project_name, TextUtils.concat("项目名称：", summaryArrayBean.title))
-        holder.setTextView(R.id.tv_summary, summaryArrayBean.summary)
+    private fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: OpaListModel.SummaryArrayBean) {
+        holder.setText(R.id.tv_project_name, TextUtils.concat("项目名称：", summaryArrayBean.title))
+        holder.setText(R.id.tv_summary, summaryArrayBean.summary)
 
-        val projectUrl = holder.getView<AppCompatTextView>(R.id.tv_project_url)
-        projectUrl.autoLinkMask = if (SPUtils.getBoolean(SPUtils.IS_OPA_URL_WEB, true)) Linkify.WEB_URLS else 0
+        val projectUrl = holder.findById<AppCompatTextView>(R.id.tv_project_url)
+        projectUrl.autoLinkMask = if (holder.getContext().opaUriWebBoolean()) Linkify.WEB_URLS else 0
         projectUrl.visibility = if (TextUtils.isEmpty(summaryArrayBean.projectUrl)) View.GONE else View.VISIBLE
         projectUrl.text = summaryArrayBean.projectUrl
 
         summaryArrayBean.tagList ?: return
 
-        val flexboxLayout = holder.getView<FlexboxLayout>(R.id.fl_box)
-        if (SPUtils.getBoolean(SPUtils.IS_OPA_TAG, true)) {
+        val flexboxLayout = holder.findById<FlexboxLayout>(R.id.fl_box)
+        if (holder.getContext().opaTagBoolean()) {
             flexboxLayout.visibility = View.VISIBLE
             summaryArrayBean.tagList?.let {
                 initTags(it, flexboxLayout)
@@ -160,7 +163,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
             val tag = tags[i]
             flowText.text = tag
             flexboxLayout.addView(flowText)
-            flowText.setOnClickListener { OpSearchActivity.newInstance(tag) }
+            flowText.setOnClickListener { startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to tag) }
         }
     }
 
@@ -168,10 +171,4 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
         mAdapter.notifyDataSetChanged()
     }
 
-    companion object {
-
-        fun newInstance(): OpaListFragment {
-            return OpaListFragment()
-        }
-    }
 }

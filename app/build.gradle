@@ -11,6 +11,7 @@ android {
         targetSdkVersion rootProject.targetSdkVersion
         versionCode rootProject.versionCode
         versionName rootProject.versionName
+        multiDexEnabled true
     }
     dataBinding {
         enabled true
@@ -21,6 +22,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = 1.8
+    }
 }
 
 dependencies {
@@ -29,7 +33,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$ktxVersion"
     implementation "org.jetbrains.anko:anko:$ankoVersion"
 
-    implementation "com.xadapter:xadapter:$xAdapterVersion"
+    implementation "com.ydevelop:rv-adapter:$xAdapterVersion"
     implementation "com.ydevelop:status-layout:$statusVersion"
     implementation "com.ydevelop:rxNetWork:$rxNetWorkVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
@@ -42,4 +46,12 @@ dependencies {
     implementation "com.afollestad.material-dialogs:core:$materialDialogVersion"
     implementation "com.github.mukeshsolanki:MarkdownView-Android:$markdownViewVersion"
     implementation "com.google.android:flexbox:$flexboxVersion"
+
+    implementation "androidx.legacy:legacy-support-v4:$legacysupportv4Version"
+    implementation "androidx.constraintlayout:constraintlayout:$constranintlayoutVersion"
+    implementation "androidx.navigation:navigation-fragment:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui:$navigationVersion"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 }

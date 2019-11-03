@@ -1,7 +1,5 @@
 package com.codekk.mvp.presenter
 
-import androidx.annotation.MenuRes
-
 /**
  * by y on 2017/5/23.
  */
@@ -14,14 +12,6 @@ interface PresenterManager {
 
     interface JobListPresenter {
         fun netWorkRequest(page: Int)
-    }
-
-    interface MainPresenter {
-        fun switchId(@MenuRes menuRes: Int)
-
-        fun onBackPressed()
-
-        fun onMainDestroy()
     }
 
     interface OpaListPresenter {

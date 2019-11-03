@@ -1,33 +1,35 @@
 package com.codekk.ui.activity
 
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.codekk.R
 import com.codekk.mvp.model.PactModel
-import com.codekk.ui.base.BaseStatusActivity
-import com.codekk.ui.base.EmptyPresenterImpl
-import com.codekk.utils.UIUtils
-import com.xadapter.OnXBindListener
-import com.xadapter.adapter.XRecyclerViewAdapter
+import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
+import com.xadapter.setItemLayoutId
+import com.xadapter.setOnBind
+import com.xadapter.setOnItemClickListener
+import com.xadapter.setText
 import kotlinx.android.synthetic.main.activity_pact.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
+import org.jetbrains.anko.browse
 import java.util.*
 
 /**
  * by y on 2017/5/26.
  */
 
-class PactActivity : BaseStatusActivity<EmptyPresenterImpl>(), OnXBindListener<PactModel> {
+class PactActivity : AppCompatActivity() {
 
-    lateinit var mAdapter: XRecyclerViewAdapter<PactModel>
+    private lateinit var mAdapter: XAdapter<PactModel>
 
-    override val layoutId: Int = R.layout.activity_pact
-
-    override fun initCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_pact)
         toolbar.setTitle(R.string.pact_title)
         setSupportActionBar(toolbar)
-        mAdapter = XRecyclerViewAdapter()
+        mAdapter = XAdapter()
 
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
@@ -160,18 +162,13 @@ class PactActivity : BaseStatusActivity<EmptyPresenterImpl>(), OnXBindListener<P
                                 "    limitations under the License.",
                         "https://github.com/7449/XAdapter"))
         recyclerView.adapter = mAdapter
-                .initXData(list)
-                .setLayoutId(R.layout.item_pact)
-                .setOnItemClickListener { _, _, info -> UIUtils.openBrowser(info.url) }
-                .onXBind(this)
+                .setItemLayoutId(R.layout.item_pact)
+                .setOnItemClickListener { _, _, info -> browse(info.url, true) }
+                .setOnBind { holder, _, entity -> onXBind(holder, entity) }
     }
 
-    override fun initPresenter(): EmptyPresenterImpl? {
-        return null
-    }
-
-    override fun onXBind(holder: XViewHolder, position: Int, pactModel: PactModel) {
-        holder.setTextView(R.id.tv_project_name, pactModel.projectName)
-        holder.setTextView(R.id.tv_project_url, pactModel.license)
+    private fun onXBind(holder: XViewHolder, pactModel: PactModel) {
+        holder.setText(R.id.tv_project_name, pactModel.projectName)
+        holder.setText(R.id.tv_project_url, pactModel.license)
     }
 }

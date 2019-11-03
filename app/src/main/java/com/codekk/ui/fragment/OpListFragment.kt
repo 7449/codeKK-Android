@@ -10,7 +10,8 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.codekk.Constant
+import com.android.status.layout.StatusLayout
+import com.codekk.*
 import com.codekk.R
 import com.codekk.mvp.model.OpListModel
 import com.codekk.mvp.presenter.OpListPresenterImpl
@@ -18,26 +19,22 @@ import com.codekk.mvp.view.ViewManager
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.utils.MaterialDialogUtils
-import com.codekk.utils.SPUtils
-import com.codekk.utils.UIUtils
 import com.codekk.widget.FlowText
 import com.codekk.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
-import com.status.layout.StatusLayout
-import com.xadapter.OnXBindListener
-import com.xadapter.adapter.XRecyclerViewAdapter
+import com.xadapter.*
+import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
 import kotlinx.android.synthetic.main.fragment_op_list.*
+import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/16
  */
 
-class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, ViewManager.OpListView, LoadMoreRecyclerView.LoadMoreListener, OnXBindListener<OpListModel.ProjectArrayBean> {
+class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, ViewManager.OpListView, LoadMoreRecyclerView.LoadMoreListener {
 
-
-    private lateinit var mAdapter: XRecyclerViewAdapter<OpListModel.ProjectArrayBean>
+    private lateinit var mAdapter: XAdapter<OpListModel.ProjectArrayBean>
 
     override val layoutId: Int = R.layout.fragment_op_list
 
@@ -46,16 +43,21 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setLoadingListener(this)
-        mAdapter = XRecyclerViewAdapter()
+        mAdapter = XAdapter()
 
         recyclerView.adapter = mAdapter
-                .setLayoutId(R.layout.item_op_list)
-                .setOnItemClickListener { _, _, info -> ReadmeActivity.newInstance(arrayOf(info._id, info.projectName, info.projectUrl), Constant.TYPE_OP) }
-                .onXBind(this)
+                .setItemLayoutId(R.layout.item_op_list)
+                .setOnItemClickListener { _, _, info ->
+                    startActivity<ReadmeActivity>(
+                            ReadmeActivity.KEY to arrayOf(info._id, info.projectName, info.projectUrl),
+                            ReadmeActivity.TYPE to Constant.TYPE_OP
+                    )
+                }
+                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
-        activity?.findViewById<View>(R.id.main_toolbar)?.setOnClickListener { recyclerView.smoothScrollToPosition(0) }
+        activity?.findViewById<View>(R.id.mToolbar)?.setOnClickListener { recyclerView.smoothScrollToPosition(0) }
     }
 
     override fun clickNetWork() {
@@ -74,7 +76,7 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
         activity?.let {
             return when (item.itemId) {
                 R.id.open_search -> {
-                    MaterialDialogUtils.openSearch(it, R.string.search_op_hint) { s -> OpSearchActivity.newInstance(s) }
+                    it.openSearch(R.string.search_op_hint) { s -> startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to s) }
                     return true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -112,7 +114,7 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAllData(entity.projectArray)
+        mAdapter.addAll(entity.projectArray)
     }
 
 
@@ -121,7 +123,7 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
             setStatusViewStatus(StatusLayout.ERROR)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.net_error)
+            mStatusView.snackBar(R.string.net_error)
         }
     }
 
@@ -130,25 +132,25 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
             setStatusViewStatus(StatusLayout.EMPTY)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.data_empty)
+            mStatusView.snackBar(R.string.data_empty)
         }
     }
 
-    override fun onXBind(holder: XViewHolder, position: Int, projectArrayBean: OpListModel.ProjectArrayBean) {
-        holder.setTextView(R.id.tv_author_name, TextUtils.concat("添加者：", projectArrayBean.authorName))
-        holder.setTextView(R.id.tv_author_url, TextUtils.concat("个人主页：", projectArrayBean.authorUrl))
-        holder.setTextView(R.id.tv_project_name, TextUtils.concat("项目名称：", projectArrayBean.projectName))
+    private fun onXBind(holder: XViewHolder, position: Int, projectArrayBean: OpListModel.ProjectArrayBean) {
+        holder.setText(R.id.tv_author_name, TextUtils.concat("添加者：", projectArrayBean.authorName))
+        holder.setText(R.id.tv_author_url, TextUtils.concat("个人主页：", projectArrayBean.authorUrl))
+        holder.setText(R.id.tv_project_name, TextUtils.concat("项目名称：", projectArrayBean.projectName))
 
-        val projectUrl = holder.getView<AppCompatTextView>(R.id.tv_project_url)
-        projectUrl.autoLinkMask = if (SPUtils.getBoolean(SPUtils.IS_OP_URL_WEB, true)) Linkify.WEB_URLS else 0
+        val projectUrl = holder.findById<AppCompatTextView>(R.id.tv_project_url)
+        projectUrl.autoLinkMask = if (holder.getContext().opUriWebBoolean()) Linkify.WEB_URLS else 0
         projectUrl.text = projectArrayBean.projectUrl
 
-        val textView = holder.getView<AppCompatTextView>(R.id.tv_desc)
+        val textView = holder.findById<AppCompatTextView>(R.id.tv_desc)
         val descEmpty = TextUtils.isEmpty(projectArrayBean.desc)
         textView.visibility = if (descEmpty) View.GONE else View.VISIBLE
         textView.text = if (descEmpty) "" else Html.fromHtml(projectArrayBean.desc)
-        val flexboxLayout = holder.getView<FlexboxLayout>(R.id.fl_box)
-        if (SPUtils.getBoolean(SPUtils.IS_OP_TAG, true)) {
+        val flexboxLayout = holder.findById<FlexboxLayout>(R.id.fl_box)
+        if (holder.getContext().opTagBoolean()) {
             flexboxLayout.visibility = View.VISIBLE
             initTags(projectArrayBean, flexboxLayout)
         } else {
@@ -161,12 +163,12 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
         flexboxLayout.removeAllViews()
         val tags = projectArrayBean.tags
         tags?.let {
-            for (i in 0 until it.size) {
+            for (element in it) {
                 val flowText = FlowText(flexboxLayout.context)
-                val tag = it[i].name
+                val tag = element.name
                 flowText.text = tag
                 flexboxLayout.addView(flowText)
-                flowText.setOnClickListener { OpSearchActivity.newInstance(tag) }
+                flowText.setOnClickListener { startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to tag) }
             }
         }
     }
@@ -175,10 +177,4 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
         mAdapter.notifyDataSetChanged()
     }
 
-    companion object {
-
-        fun newInstance(): OpListFragment {
-            return OpListFragment()
-        }
-    }
 }

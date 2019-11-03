@@ -1,9 +1,7 @@
 package com.codekk.mvp.view
 
 
-import androidx.appcompat.app.AppCompatActivity
 import com.codekk.mvp.model.*
-import com.codekk.ui.base.BaseModel
 import com.codekk.ui.base.BaseView
 
 /**
@@ -11,7 +9,6 @@ import com.codekk.ui.base.BaseView
  */
 
 interface ViewManager {
-
 
     /**
      * ListView 继承，实现 noMore方法
@@ -41,18 +38,4 @@ interface ViewManager {
     interface RecommendListView : BaseListView<RecommendListModel>
 
     interface RecommendSearchView : BaseListView<RecommendSearchModel>
-
-    interface MainView : BaseView<BaseModel<*>> {
-
-        val mainActivity: AppCompatActivity
-
-        fun switchSetting()
-
-        fun onBack()
-
-        fun selectMenuFirst()
-
-        fun switchPact()
-    }
-
 }

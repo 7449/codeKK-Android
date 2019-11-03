@@ -2,37 +2,21 @@ package com.codekk.ui.base
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.android.status.layout.OnEmptyClick
+import com.android.status.layout.OnErrorClick
+import com.android.status.layout.addSuccessView
 import com.codekk.App
 import com.codekk.R
-import com.status.layout.OnStatusClickListener
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 
 /**
  * by y on 2017/5/16
  */
-abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : AppCompatActivity(), OnStatusClickListener {
-
-    override fun onEmptyClick(view: View) {
-        clickNetWork()
-    }
-
-    override fun onErrorClick(view: View) {
-        clickNetWork()
-    }
-
-    override fun onLoadingClick(view: View) {
-    }
-
-    override fun onNorMalClick(view: View) {
-    }
-
-    override fun onSuccessClick(view: View) {
-    }
+abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : AppCompatActivity() {
 
     protected var mPresenter: P? = null
 
@@ -41,10 +25,12 @@ abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : AppCompatActivi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("onCreate", javaClass.simpleName)
         setContentView(R.layout.activity_base)
-        activity_status_layout.addSuccessView(layoutId)
-        activity_status_layout.onStatusClickListener = this
+        statusLayout.addSuccessView(layoutId)
+        statusLayout
+                .OnEmptyClick { clickNetWork() }
+                .OnErrorClick { clickNetWork() }
+
         mPresenter = initPresenter()
         mPresenter?.setNetWorkTag(javaClass.simpleName)
         bundle = intent.extras
@@ -84,6 +70,6 @@ abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : AppCompatActivi
     }
 
     fun setStatusViewStatus(status: String) {
-        activity_status_layout.setStatus(status)
+        statusLayout.status = status
     }
 }

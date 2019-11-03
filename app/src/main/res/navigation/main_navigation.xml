@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@+id/op">
+    <fragment
+        android:id="@+id/op"
+        android:name="com.codekk.ui.fragment.OpListFragment"
+        android:label="@string/op_title"
+        tools:layout="@layout/fragment_op_list" />
+
+    <fragment
+        android:id="@+id/opa"
+        android:name="com.codekk.ui.fragment.OpaListFragment"
+        android:label="@string/opa_title"
+        tools:layout="@layout/fragment_opa_list" />
+
+    <fragment
+        android:id="@+id/job"
+        android:name="com.codekk.ui.fragment.JobListFragment"
+        android:label="@string/job_title"
+        tools:layout="@layout/fragment_job_list" />
+
+    <fragment
+        android:id="@+id/blog"
+        android:name="com.codekk.ui.fragment.BlogListFragment"
+        android:label="@string/blog_title"
+        tools:layout="@layout/fragment_blog_list" />
+
+<!--    <fragment-->
+<!--        android:id="@+id/note"-->
+<!--        android:name="com.codekk.ui.fragment.NoteListFragment"-->
+<!--        android:label="@string/notes_title"-->
+<!--        tools:layout="@layout/fragment_note_list" />-->
+
+    <fragment
+        android:id="@+id/recommend"
+        android:name="com.codekk.ui.fragment.RecommendListFragment"
+        android:label="@string/recommend_title"
+        tools:layout="@layout/fragment_recommend_list" />
+
+<!--    <fragment-->
+<!--        android:id="@+id/common"-->
+<!--        android:name="com.codekk.ui.fragment.CommonListFragment"-->
+<!--        android:label="@string/common_title"-->
+<!--        tools:layout="@layout/fragment_common_list" />-->
+</navigation>

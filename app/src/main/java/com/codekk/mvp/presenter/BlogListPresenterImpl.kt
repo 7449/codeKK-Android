@@ -1,11 +1,10 @@
 package com.codekk.mvp.presenter
 
+import com.codekk.BlogService
+import com.codekk.NetFunc
 import com.codekk.mvp.model.BlogListModel
 import com.codekk.mvp.view.ViewManager
-import com.codekk.net.Api
-import com.codekk.net.NetFunc
 import com.codekk.ui.base.BasePresenterImpl
-
 import io.reactivex.network.RxNetWork
 
 
@@ -17,7 +16,7 @@ class BlogListPresenterImpl(view: ViewManager.BlogListView) : BasePresenterImpl<
 
     override fun netWorkRequest(page: Int) {
         netWork(RxNetWork
-                .observable(Api.BlogService::class.java)
+                .observable(BlogService::class.java)
                 .getBlogList(page)
                 .map(NetFunc()))
     }

@@ -9,30 +9,31 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.android.status.layout.StatusLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.mvp.model.RecommendListModel
 import com.codekk.mvp.presenter.RecommendListPresenterImpl
 import com.codekk.mvp.view.ViewManager
+import com.codekk.openSearch
+import com.codekk.snackBar
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.activity.RecommendSearchActivity
 import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.utils.MaterialDialogUtils
-import com.codekk.utils.UIUtils
 import com.codekk.widget.LoadMoreRecyclerView
-import com.status.layout.StatusLayout
-import com.xadapter.OnXBindListener
-import com.xadapter.adapter.XRecyclerViewAdapter
+import com.xadapter.*
+import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
 import kotlinx.android.synthetic.main.fragment_recommend_list.*
+import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18
  */
 
-class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), ViewManager.RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener, OnXBindListener<RecommendListModel.RecommendArrayBean> {
+class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), ViewManager.RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
-    private lateinit var mAdapter: XRecyclerViewAdapter<RecommendListModel.RecommendArrayBean>
+    private lateinit var mAdapter: XAdapter<RecommendListModel.RecommendArrayBean>
 
     override val layoutId: Int = R.layout.fragment_recommend_list
 
@@ -41,11 +42,16 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.setLoadingListener(this)
-        mAdapter = XRecyclerViewAdapter()
+        mAdapter = XAdapter()
         recyclerView.adapter = mAdapter
-                .setLayoutId(R.layout.item_recommend_list)
-                .setOnItemClickListener { _, _, info -> ReadmeActivity.newInstance(arrayOf("0", info.title, info.url), Constant.TYPE_RECOMMEND) }
-                .onXBind(this)
+                .setItemLayoutId(R.layout.item_recommend_list)
+                .setOnItemClickListener { _, _, info ->
+                    startActivity<ReadmeActivity>(
+                            ReadmeActivity.TYPE to arrayOf("0", info.title, info.url),
+                            ReadmeActivity.KEY to Constant.TYPE_RECOMMEND
+                    )
+                }
+                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -68,7 +74,11 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
         activity?.let {
             return when (item.itemId) {
                 R.id.open_search -> {
-                    MaterialDialogUtils.openSearch(it, R.string.search_recommend_hint) { s -> RecommendSearchActivity.newInstance(s) }
+                    it.openSearch(R.string.search_recommend_hint) { s ->
+                        startActivity<RecommendSearchActivity>(
+                                RecommendSearchActivity.TEXT_KEY to s
+                        )
+                    }
                     return true
                 }
                 else -> super.onOptionsItemSelected(item)
@@ -106,7 +116,7 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAllData(entity.recommendArray)
+        mAdapter.addAll(entity.recommendArray)
     }
 
     override fun netWorkError(throwable: Throwable) {
@@ -114,7 +124,7 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
             setStatusViewStatus(StatusLayout.ERROR)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.net_error)
+            mStatusView.snackBar(R.string.net_error)
         }
     }
 
@@ -123,16 +133,16 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
             setStatusViewStatus(StatusLayout.EMPTY)
             mAdapter.removeAll()
         } else {
-            UIUtils.snackBar(mStatusView, R.string.data_empty)
+            mStatusView.snackBar(R.string.data_empty)
         }
     }
 
 
-    override fun onXBind(holder: XViewHolder, position: Int, recommendArrayBean: RecommendListModel.RecommendArrayBean) {
+    private fun onXBind(holder: XViewHolder, position: Int, recommendArrayBean: RecommendListModel.RecommendArrayBean) {
         if (!TextUtils.isEmpty(recommendArrayBean.title)) {
-            holder.setTextView(R.id.tv_recommend_title, recommendArrayBean.title)
+            holder.setText(R.id.tv_recommend_title, recommendArrayBean.title)
         }
-        val descView = holder.getView<AppCompatTextView>(R.id.tv_recommend_desc)
+        val descView = holder.findById<AppCompatTextView>(R.id.tv_recommend_desc)
         descView.visibility = if (TextUtils.isEmpty(recommendArrayBean.desc)) View.GONE else View.VISIBLE
         if (!TextUtils.isEmpty(recommendArrayBean.desc)) {
             descView.text = Html.fromHtml(recommendArrayBean.desc)
@@ -141,12 +151,5 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
 
     override fun onBusNext(entity: Any) {
 
-    }
-
-    companion object {
-
-        fun newInstance(): RecommendListFragment {
-            return RecommendListFragment()
-        }
     }
 }

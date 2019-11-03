@@ -7,8 +7,8 @@
 
     <include layout="@layout/layout_toolbar" />
 
-    <com.status.layout.StatusLayout
-        android:id="@+id/activity_status_layout"
+    <com.android.status.layout.StatusLayout
+        android:id="@+id/statusLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:status_empty_layout="@layout/layout_status_empty"
