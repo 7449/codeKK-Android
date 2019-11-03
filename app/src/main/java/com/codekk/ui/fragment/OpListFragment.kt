@@ -13,24 +13,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.ext.*
-import com.codekk.mvp.presenter.impl.OpListPresenterImpl
+import com.codekk.mvp.presenter.impl.OpPresenterImpl
 import com.codekk.mvp.view.OpListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.base.BaseFragment
-import com.codekk.ui.widget.FlowText
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.fragment_op_list.*
+import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/16
  */
-class OpListFragment : BaseFragment<OpListPresenterImpl>(R.layout.fragment_op_list), SwipeRefreshLayout.OnRefreshListener, OpListView, LoadMoreRecyclerView.LoadMoreListener {
+class OpListFragment : BaseFragment<OpPresenterImpl>(R.layout.layout_list), SwipeRefreshLayout.OnRefreshListener, OpListView, LoadMoreRecyclerView.LoadMoreListener {
 
     private lateinit var mAdapter: XAdapter<OpListBean>
 
@@ -80,21 +79,21 @@ class OpListFragment : BaseFragment<OpListPresenterImpl>(R.layout.fragment_op_li
         } ?: return super.onOptionsItemSelected(item)
     }
 
-    override fun initPresenter(): OpListPresenterImpl? {
-        return OpListPresenterImpl(this)
+    override fun initPresenter(): OpPresenterImpl? {
+        return OpPresenterImpl(this)
     }
 
     override fun onRefresh() {
         mStatusView.success()
         page = 1
-        mPresenter?.netWorkRequest(page)
+        mPresenter?.netWorkRequestList(page)
     }
 
     override fun onLoadMore() {
         if (refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequest(page)
+        mPresenter?.netWorkRequestList(page)
     }
 
     override fun showProgress() {
@@ -148,24 +147,9 @@ class OpListFragment : BaseFragment<OpListPresenterImpl>(R.layout.fragment_op_li
         val flexboxLayout = holder.findById<FlexboxLayout>(R.id.fl_box)
         if (holder.getContext().opTagBoolean()) {
             flexboxLayout.visibility = View.VISIBLE
-            initTags(projectArrayBean, flexboxLayout)
+            flexboxLayout.tags(projectArrayBean.tags()) { startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to it) }
         } else {
             flexboxLayout.visibility = View.GONE
-        }
-    }
-
-
-    private fun initTags(projectArrayBean: OpListBean, flexboxLayout: FlexboxLayout) {
-        flexboxLayout.removeAllViews()
-        val tags = projectArrayBean.tags
-        tags?.let {
-            for (element in it) {
-                val flowText = FlowText(flexboxLayout.context)
-                val tag = element.name
-                flowText.text = tag
-                flexboxLayout.addView(flowText)
-                flowText.setOnClickListener { startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to tag) }
-            }
         }
     }
 

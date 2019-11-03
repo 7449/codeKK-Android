@@ -10,24 +10,23 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.ext.*
-import com.codekk.mvp.presenter.impl.OpaSearchPresenterImpl
-import com.codekk.mvp.view.OpaSearchView
+import com.codekk.mvp.presenter.impl.OpaPresenterImpl
+import com.codekk.mvp.view.OpaListView
 import com.codekk.ui.base.BaseActivity
-import com.codekk.ui.widget.FlowText
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
 import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_opa_search.*
+import kotlinx.android.synthetic.main.layout_list.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 import org.jetbrains.anko.startActivity
 
 /**
  * by y on 2017/5/18.
  */
-class OpaSearchActivity : BaseActivity<OpaSearchPresenterImpl>(R.layout.activity_opa_search), OpaSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class OpaSearchActivity : BaseActivity<OpaPresenterImpl>(R.layout.layout_list), OpaListView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     private var text: String = ""
     private var page = 1
@@ -42,7 +41,7 @@ class OpaSearchActivity : BaseActivity<OpaSearchPresenterImpl>(R.layout.activity
         mAdapter = XAdapter()
 
         recyclerView.adapter = mAdapter
-                .setItemLayoutId(R.layout.item_opa_search)
+                .setItemLayoutId(R.layout.item_opa_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
                             ReadmeActivity.TYPE to arrayOf(info.id, info.projectName, info.projectUrl),
@@ -67,8 +66,8 @@ class OpaSearchActivity : BaseActivity<OpaSearchPresenterImpl>(R.layout.activity
         }
     }
 
-    override fun initPresenter(): OpaSearchPresenterImpl? {
-        return OpaSearchPresenterImpl(this)
+    override fun initPresenter(): OpaPresenterImpl? {
+        return OpaPresenterImpl(this)
     }
 
     override fun showProgress() {
@@ -81,14 +80,14 @@ class OpaSearchActivity : BaseActivity<OpaSearchPresenterImpl>(R.layout.activity
 
     override fun onRefresh() {
         statusLayout.success()
-        mPresenter?.netWorkRequest(text, page = 1)
+        mPresenter?.netWorkRequestSearch(text, page = 1)
     }
 
     override fun onLoadMore() {
         if (refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequest(text, page)
+        mPresenter?.netWorkRequestSearch(text, page)
     }
 
     override fun netWorkSuccess(entity: OpaListModel) {
@@ -126,30 +125,14 @@ class OpaSearchActivity : BaseActivity<OpaSearchPresenterImpl>(R.layout.activity
         projectUrl.visibility = if (TextUtils.isEmpty(summaryArrayBean.projectUrl)) View.GONE else View.VISIBLE
         projectUrl.text = summaryArrayBean.projectUrl
 
-        summaryArrayBean.tagList ?: return
-
         val flexboxLayout = holder.findById<FlexboxLayout>(R.id.fl_box)
         if (opaTagBoolean()) {
             flexboxLayout.visibility = View.VISIBLE
-            summaryArrayBean.tagList?.let {
-                initTags(it, flexboxLayout)
+            flexboxLayout.tags(summaryArrayBean.tagList) {
+                startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to it)
             }
         } else {
             flexboxLayout.visibility = View.GONE
-        }
-    }
-
-    private fun initTags(tags: List<String>, flexboxLayout: FlexboxLayout) {
-        flexboxLayout.removeAllViews()
-        val size = tags.size
-        for (i in 0 until size) {
-            val flowText = FlowText(flexboxLayout.context)
-            val tag = tags[i]
-            flowText.text = tag
-            flexboxLayout.addView(flowText)
-            flowText.setOnClickListener {
-                startActivity<OpSearchActivity>(OpSearchActivity.TEXT_KEY to tag)
-            }
         }
     }
 

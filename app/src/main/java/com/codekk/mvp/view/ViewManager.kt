@@ -10,16 +10,10 @@ interface JobListView : BaseListView<JobListModel>
 
 interface OpaListView : BaseListView<OpaListModel>
 
-interface OpaSearchView : BaseListView<OpaListModel>
-
 interface ReadmeView : BaseView<ReadmeModel> {
     fun loadWebViewUrl()
 }
 
 interface OpListView : BaseListView<OpListModel>
 
-interface OpSearchView : BaseListView<OpListModel>
-
 interface RecommendListView : BaseListView<RecommendListModel>
-
-interface RecommendSearchView : BaseListView<RecommendListModel>

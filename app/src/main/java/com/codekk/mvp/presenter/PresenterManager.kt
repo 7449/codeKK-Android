@@ -8,30 +8,21 @@ interface JobListPresenter {
     fun netWorkRequest(page: Int)
 }
 
-interface OpaListPresenter {
-    fun netWorkRequest(page: Int)
+interface RecommendPresenter {
+    fun netWorkRequestList(page: Int)
+    fun netWorkRequestSearch(name: String, page: Int)
 }
 
-interface OpaSearchPresenter {
-    fun netWorkRequest(text: String, page: Int)
+interface OpaPresenter {
+    fun netWorkRequestList(page: Int)
+    fun netWorkRequestSearch(text: String, page: Int)
 }
 
-interface OpDetailPresenter {
+interface OpPresenter {
+    fun netWorkRequestList(page: Int)
+    fun netWorkRequestSearch(text: String, page: Int)
+}
+
+interface ReadmePresenter {
     fun netWorkRequest(id: String, type: Int)
-}
-
-interface OpListPresenter {
-    fun netWorkRequest(page: Int)
-}
-
-interface OpSearchPresenter {
-    fun netWorkRequest(text: String, page: Int)
-}
-
-interface RecommendListPresenter {
-    fun netWorkRequest(page: Int)
-}
-
-interface RecommendSearchPresenter {
-    fun netWorkRequest(name: String, page: Int)
 }

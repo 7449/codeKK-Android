@@ -9,22 +9,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.R
 import com.codekk.ext.*
-import com.codekk.mvp.presenter.impl.RecommendSearchPresenterImpl
-import com.codekk.mvp.view.RecommendSearchView
+import com.codekk.mvp.presenter.impl.RecommendPresenterImpl
+import com.codekk.mvp.view.RecommendListView
 import com.codekk.ui.base.BaseActivity
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
 import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_recommend_search.*
+import kotlinx.android.synthetic.main.layout_list.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 import org.jetbrains.anko.browse
 
 /**
  * by y on 2017/5/20.
  */
-class RecommendSearchActivity : BaseActivity<RecommendSearchPresenterImpl>(R.layout.activity_recommend_search), RecommendSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class RecommendSearchActivity : BaseActivity<RecommendPresenterImpl>(R.layout.layout_list), RecommendListView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         const val TEXT_KEY = "text"
@@ -50,7 +50,7 @@ class RecommendSearchActivity : BaseActivity<RecommendSearchPresenterImpl>(R.lay
         recyclerView.adapter = mAdapter
                 .setItemLayoutId(R.layout.item_recommend_list)
                 .setOnItemClickListener { _, _, info -> browse(info.url, true) }
-                .setOnBind { holder, position, entity ->
+                .setOnBind { holder, _, entity ->
                     onXBind(holder, entity)
                 }
 
@@ -65,8 +65,8 @@ class RecommendSearchActivity : BaseActivity<RecommendSearchPresenterImpl>(R.lay
         }
     }
 
-    override fun initPresenter(): RecommendSearchPresenterImpl? {
-        return RecommendSearchPresenterImpl(this)
+    override fun initPresenter(): RecommendPresenterImpl? {
+        return RecommendPresenterImpl(this)
     }
 
     override fun showProgress() {
@@ -79,14 +79,14 @@ class RecommendSearchActivity : BaseActivity<RecommendSearchPresenterImpl>(R.lay
 
     override fun onRefresh() {
         statusLayout.success()
-        mPresenter?.netWorkRequest(text, page = 1)
+        mPresenter?.netWorkRequestSearch(text, page = 1)
     }
 
     override fun onLoadMore() {
         if (refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequest(text, page)
+        mPresenter?.netWorkRequestSearch(text, page)
     }
 
 

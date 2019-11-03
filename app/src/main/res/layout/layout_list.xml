@@ -4,11 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
     <com.codekk.ui.widget.LoadMoreRecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+

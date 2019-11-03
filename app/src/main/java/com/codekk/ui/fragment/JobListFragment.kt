@@ -14,13 +14,13 @@ import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.fragment_job_list.*
+import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18.
  */
-class JobListFragment : BaseFragment<JobListPresenterImpl>(R.layout.fragment_job_list), SwipeRefreshLayout.OnRefreshListener, JobListView, LoadMoreRecyclerView.LoadMoreListener {
+class JobListFragment : BaseFragment<JobListPresenterImpl>(R.layout.layout_list), SwipeRefreshLayout.OnRefreshListener, JobListView, LoadMoreRecyclerView.LoadMoreListener {
 
     private lateinit var mAdapter: XAdapter<JobListBean>
 

@@ -12,7 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.ext.*
-import com.codekk.mvp.presenter.impl.RecommendListPresenterImpl
+import com.codekk.mvp.presenter.impl.RecommendPresenterImpl
 import com.codekk.mvp.view.RecommendListView
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.activity.RecommendSearchActivity
@@ -21,13 +21,13 @@ import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.fragment_recommend_list.*
+import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18
  */
-class RecommendListFragment : BaseFragment<RecommendListPresenterImpl>(R.layout.fragment_recommend_list), RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
+class RecommendListFragment : BaseFragment<RecommendPresenterImpl>(R.layout.layout_list), RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
     private lateinit var mAdapter: XAdapter<RecommendListBean>
 
@@ -80,21 +80,21 @@ class RecommendListFragment : BaseFragment<RecommendListPresenterImpl>(R.layout.
         } ?: return super.onOptionsItemSelected(item)
     }
 
-    override fun initPresenter(): RecommendListPresenterImpl? {
-        return RecommendListPresenterImpl(this)
+    override fun initPresenter(): RecommendPresenterImpl? {
+        return RecommendPresenterImpl(this)
     }
 
     override fun onRefresh() {
         mStatusView.success()
         page = 1
-        mPresenter?.netWorkRequest(page)
+        mPresenter?.netWorkRequestList(page)
     }
 
     override fun onLoadMore() {
         if (refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequest(page)
+        mPresenter?.netWorkRequestList(page)
     }
 
     override fun showProgress() {

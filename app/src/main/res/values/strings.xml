@@ -22,16 +22,4 @@
     <string name="net_error">网络连接失败,点击重试</string>
     <string name="net_loading">loading…</string>
     <string name="data_empty">没有数据了</string>
-    <string name="empty_view_tips">数据为空,点击重试</string>
-
-    <string name="xadapter">XAdapter</string>
-    <string name="rxnetwork">rxNetWork</string>
-    <string name="leakcanary">leakcanary</string>
-    <string name="materialdialog">material-dialogs</string>
-    <string name="butterknife">butterknife</string>
-    <string name="flexbox">flexbox</string>
-    <string name="markdownView">MarkdownView</string>
-    <string name="rxJava">RxJava</string>
-    <string name="retrofit">Retrofit2</string>
-    <string name="backlayout">BackLayout</string>
 </resources>

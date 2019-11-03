@@ -11,22 +11,22 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
 import com.codekk.ext.*
-import com.codekk.mvp.presenter.impl.OpSearchPresenterImpl
-import com.codekk.mvp.view.OpSearchView
+import com.codekk.mvp.presenter.impl.OpPresenterImpl
+import com.codekk.mvp.view.OpListView
 import com.codekk.ui.base.BaseActivity
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_search.*
+import kotlinx.android.synthetic.main.layout_list.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
 import org.jetbrains.anko.startActivity
 
 /**
  * by y on 2017/5/17
  */
-class OpSearchActivity : BaseActivity<OpSearchPresenterImpl>(R.layout.activity_search), OpSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class OpSearchActivity : BaseActivity<OpPresenterImpl>(R.layout.layout_list), OpListView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         const val TEXT_KEY = "text"
@@ -93,8 +93,8 @@ class OpSearchActivity : BaseActivity<OpSearchPresenterImpl>(R.layout.activity_s
         }
     }
 
-    override fun initPresenter(): OpSearchPresenterImpl? {
-        return OpSearchPresenterImpl(this)
+    override fun initPresenter(): OpPresenterImpl? {
+        return OpPresenterImpl(this)
     }
 
     override fun showProgress() {
@@ -107,14 +107,14 @@ class OpSearchActivity : BaseActivity<OpSearchPresenterImpl>(R.layout.activity_s
 
     override fun onRefresh() {
         statusLayout.success()
-        mPresenter?.netWorkRequest(text, page = 1)
+        mPresenter?.netWorkRequestSearch(text, page = 1)
     }
 
     override fun onLoadMore() {
         if (refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequest(text, page)
+        mPresenter?.netWorkRequestSearch(text, page)
     }
 
     override fun netWorkSuccess(entity: OpListModel) {

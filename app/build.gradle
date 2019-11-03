@@ -31,7 +31,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompatVersion"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.core:core-ktx:$ktxVersion"
-    implementation "org.jetbrains.anko:anko:$ankoVersion"
 
     implementation "com.ydevelop:rv-adapter:$xAdapterVersion"
     implementation "com.ydevelop:status-layout:$statusVersion"
@@ -54,4 +53,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleExtensionsVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+
+    implementation "org.jetbrains.anko:anko:$ankoVersion"
 }
