@@ -7,15 +7,14 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
-import com.codekk.*
+import com.codekk.Constant
 import com.codekk.R
-import com.codekk.mvp.model.OpaSearchModel
-import com.codekk.mvp.presenter.OpaSearchPresenterImpl
-import com.codekk.mvp.view.ViewManager
-import com.codekk.ui.base.BaseStatusActivity
-import com.codekk.widget.FlowText
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.OpaSearchPresenterImpl
+import com.codekk.mvp.view.OpaSearchView
+import com.codekk.ui.base.BaseActivity
+import com.codekk.ui.widget.FlowText
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
@@ -28,15 +27,12 @@ import org.jetbrains.anko.startActivity
 /**
  * by y on 2017/5/18.
  */
-
-class OpaSearchActivity : BaseStatusActivity<OpaSearchPresenterImpl>(), ViewManager.OpaSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class OpaSearchActivity : BaseActivity<OpaSearchPresenterImpl>(R.layout.activity_opa_search), OpaSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     private var text: String = ""
     private var page = 1
 
-    private lateinit var mAdapter: XAdapter<OpaSearchModel.SummaryArrayBean>
-
-    override val layoutId: Int = R.layout.activity_opa_search
+    private lateinit var mAdapter: XAdapter<OpaListBean>
 
     override fun initCreate(savedInstanceState: Bundle?) {
         toolbar.title = text
@@ -49,11 +45,11 @@ class OpaSearchActivity : BaseStatusActivity<OpaSearchPresenterImpl>(), ViewMana
                 .setItemLayoutId(R.layout.item_opa_search)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
-                            ReadmeActivity.TYPE to arrayOf(info._id, info.projectName, info.projectUrl),
+                            ReadmeActivity.TYPE to arrayOf(info.id, info.projectName, info.projectUrl),
                             ReadmeActivity.KEY to Constant.TYPE_OPA
                     )
                 }
-                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
+                .setOnBind { holder, _, entity -> onXBind(holder, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -84,7 +80,7 @@ class OpaSearchActivity : BaseStatusActivity<OpaSearchPresenterImpl>(), ViewMana
     }
 
     override fun onRefresh() {
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        statusLayout.success()
         mPresenter?.netWorkRequest(text, page = 1)
     }
 
@@ -95,17 +91,17 @@ class OpaSearchActivity : BaseStatusActivity<OpaSearchPresenterImpl>(), ViewMana
         mPresenter?.netWorkRequest(text, page)
     }
 
-    override fun netWorkSuccess(entity: OpaSearchModel) {
+    override fun netWorkSuccess(entity: OpaListModel) {
         if (page == 1) {
             mAdapter.removeAll()
         }
         ++page
-        mAdapter.addAll(entity.summaryArray)
+        mAdapter.addAll(entity.opaList)
     }
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            statusLayout.error()
             mAdapter.removeAll()
         } else {
             statusLayout.snackBar(R.string.net_error)
@@ -114,14 +110,14 @@ class OpaSearchActivity : BaseStatusActivity<OpaSearchPresenterImpl>(), ViewMana
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            statusLayout.empty()
             mAdapter.removeAll()
         } else {
             statusLayout.snackBar(R.string.data_empty)
         }
     }
 
-    private fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: OpaSearchModel.SummaryArrayBean) {
+    private fun onXBind(holder: XViewHolder, summaryArrayBean: OpaListBean) {
         holder.setText(R.id.tv_project_name, TextUtils.concat("项目名称：", summaryArrayBean.title))
         holder.setText(R.id.tv_summary, summaryArrayBean.summary)
 

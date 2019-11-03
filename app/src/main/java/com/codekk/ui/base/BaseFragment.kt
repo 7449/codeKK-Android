@@ -6,28 +6,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.android.status.layout.*
-import com.codekk.App
 import com.codekk.R
+import com.codekk.ext.success
 import io.reactivex.network.RxBus
 import io.reactivex.network.RxBusCallBack
 
 /**
  * by y on 2017/5/16
  */
-abstract class BaseStatusFragment<P : BasePresenterImpl<*, *>> : Fragment(), RxBusCallBack<Any> {
+abstract class BaseFragment<P : BasePresenterImpl<*, *>>(val layout: Int) : Fragment(), RxBusCallBack<Any> {
 
     protected lateinit var mStatusView: StatusLayout
     protected var mPresenter: P? = null
     protected var page: Int = 0
-
-    protected abstract val layoutId: Int
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!::mStatusView.isInitialized) {
             mStatusView = StatusLayout(container!!.context)
             mStatusView.addEmptyView(R.layout.layout_status_empty)
             mStatusView.addErrorView(R.layout.layout_status_error)
-            mStatusView.addSuccessView(layoutId)
+            mStatusView.addSuccessView(layout)
+            mStatusView.success()
             mStatusView
                     .OnEmptyClick { clickNetWork() }
                     .OnErrorClick { clickNetWork() }
@@ -39,7 +38,6 @@ abstract class BaseStatusFragment<P : BasePresenterImpl<*, *>> : Fragment(), RxB
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mPresenter = initPresenter()
-        mPresenter?.setNetWorkTag(javaClass.simpleName)
         initActivityCreated()
     }
 
@@ -48,9 +46,6 @@ abstract class BaseStatusFragment<P : BasePresenterImpl<*, *>> : Fragment(), RxB
     protected abstract fun initPresenter(): P?
 
     protected open fun clickNetWork() {}
-
-    override fun onBusError(throwable: Throwable) {
-    }
 
     override fun busOfType(): Class<Any> {
         return Any::class.java
@@ -61,12 +56,5 @@ abstract class BaseStatusFragment<P : BasePresenterImpl<*, *>> : Fragment(), RxB
         RxBus.instance.unregister(javaClass.simpleName)
         mPresenter?.onDestroy()
         mPresenter = null
-        activity?.let {
-            App[it].watch(this)
-        }
-    }
-
-    fun setStatusViewStatus(status: String) {
-        mStatusView.status = status
     }
 }

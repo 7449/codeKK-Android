@@ -7,14 +7,12 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
 import com.codekk.R
-import com.codekk.mvp.model.RecommendSearchModel
-import com.codekk.mvp.presenter.RecommendSearchPresenterImpl
-import com.codekk.mvp.view.ViewManager
-import com.codekk.snackBar
-import com.codekk.ui.base.BaseStatusActivity
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.RecommendSearchPresenterImpl
+import com.codekk.mvp.view.RecommendSearchView
+import com.codekk.ui.base.BaseActivity
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
@@ -26,8 +24,7 @@ import org.jetbrains.anko.browse
 /**
  * by y on 2017/5/20.
  */
-
-class RecommendSearchActivity : BaseStatusActivity<RecommendSearchPresenterImpl>(), ViewManager.RecommendSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class RecommendSearchActivity : BaseActivity<RecommendSearchPresenterImpl>(R.layout.activity_recommend_search), RecommendSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         const val TEXT_KEY = "text"
@@ -35,9 +32,7 @@ class RecommendSearchActivity : BaseStatusActivity<RecommendSearchPresenterImpl>
 
     private var text: String = ""
     private var page = 1
-    private lateinit var mAdapter: XAdapter<RecommendSearchModel.RecommendArrayBean>
-
-    override val layoutId: Int = R.layout.activity_recommend_search
+    private lateinit var mAdapter: XAdapter<RecommendListBean>
 
     override fun initBundle(bundle: Bundle) {
         super.initBundle(bundle)
@@ -56,7 +51,7 @@ class RecommendSearchActivity : BaseStatusActivity<RecommendSearchPresenterImpl>
                 .setItemLayoutId(R.layout.item_recommend_list)
                 .setOnItemClickListener { _, _, info -> browse(info.url, true) }
                 .setOnBind { holder, position, entity ->
-                    onXBind(holder, position, entity)
+                    onXBind(holder, entity)
                 }
 
         refreshLayout.setOnRefreshListener(this)
@@ -83,7 +78,7 @@ class RecommendSearchActivity : BaseStatusActivity<RecommendSearchPresenterImpl>
     }
 
     override fun onRefresh() {
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        statusLayout.success()
         mPresenter?.netWorkRequest(text, page = 1)
     }
 
@@ -95,17 +90,17 @@ class RecommendSearchActivity : BaseStatusActivity<RecommendSearchPresenterImpl>
     }
 
 
-    override fun netWorkSuccess(entity: RecommendSearchModel) {
+    override fun netWorkSuccess(entity: RecommendListModel) {
         if (page == 1) {
             mAdapter.removeAll()
         }
         ++page
-        mAdapter.addAll(entity.recommendArray)
+        mAdapter.addAll(entity.recommendList)
     }
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            statusLayout.error()
             mAdapter.removeAll()
         } else {
             statusLayout.snackBar(R.string.net_error)
@@ -114,14 +109,14 @@ class RecommendSearchActivity : BaseStatusActivity<RecommendSearchPresenterImpl>
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            statusLayout.empty()
             mAdapter.removeAll()
         } else {
             statusLayout.snackBar(R.string.data_empty)
         }
     }
 
-    private fun onXBind(holder: XViewHolder, position: Int, recommendArrayBean: RecommendSearchModel.RecommendArrayBean) {
+    private fun onXBind(holder: XViewHolder, recommendArrayBean: RecommendListBean) {
         if (!TextUtils.isEmpty(recommendArrayBean.title)) {
             holder.setText(R.id.tv_recommend_title, recommendArrayBean.title)
         }

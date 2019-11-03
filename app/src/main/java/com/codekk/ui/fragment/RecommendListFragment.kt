@@ -9,18 +9,15 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
 import com.codekk.Constant
 import com.codekk.R
-import com.codekk.mvp.model.RecommendListModel
-import com.codekk.mvp.presenter.RecommendListPresenterImpl
-import com.codekk.mvp.view.ViewManager
-import com.codekk.openSearch
-import com.codekk.snackBar
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.RecommendListPresenterImpl
+import com.codekk.mvp.view.RecommendListView
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.activity.RecommendSearchActivity
-import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
@@ -30,12 +27,9 @@ import org.jetbrains.anko.support.v4.startActivity
 /**
  * by y on 2017/5/18
  */
+class RecommendListFragment : BaseFragment<RecommendListPresenterImpl>(R.layout.fragment_recommend_list), RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
-class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), ViewManager.RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
-
-    private lateinit var mAdapter: XAdapter<RecommendListModel.RecommendArrayBean>
-
-    override val layoutId: Int = R.layout.fragment_recommend_list
+    private lateinit var mAdapter: XAdapter<RecommendListBean>
 
     override fun initActivityCreated() {
         setHasOptionsMenu(true)
@@ -51,7 +45,7 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
                             ReadmeActivity.KEY to Constant.TYPE_RECOMMEND
                     )
                 }
-                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
+                .setOnBind { holder, position, entity -> onXBind(holder, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -91,7 +85,7 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
     }
 
     override fun onRefresh() {
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        mStatusView.success()
         page = 1
         mPresenter?.netWorkRequest(page)
     }
@@ -116,12 +110,12 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAll(entity.recommendArray)
+        mAdapter.addAll(entity.recommendList)
     }
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            mStatusView.error()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.net_error)
@@ -130,7 +124,7 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            mStatusView.empty()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.data_empty)
@@ -138,7 +132,7 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
     }
 
 
-    private fun onXBind(holder: XViewHolder, position: Int, recommendArrayBean: RecommendListModel.RecommendArrayBean) {
+    private fun onXBind(holder: XViewHolder, recommendArrayBean: RecommendListBean) {
         if (!TextUtils.isEmpty(recommendArrayBean.title)) {
             holder.setText(R.id.tv_recommend_title, recommendArrayBean.title)
         }

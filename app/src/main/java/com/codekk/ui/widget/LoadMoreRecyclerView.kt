@@ -1,6 +1,6 @@
 @file:Suppress("ClassName")
 
-package com.codekk.widget
+package com.codekk.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet

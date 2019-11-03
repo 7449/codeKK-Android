@@ -26,12 +26,7 @@ class MainActivity : AppCompatActivity() {
         mToolbar.setNavigationIcon(R.drawable.ic_menu)
         mToolbar.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
         val navController = findNavController(R.id.hostFragment)
-        appBarConfiguration = AppBarConfiguration(
-                setOf(
-                        R.id.op, R.id.opa, R.id.job,
-                        R.id.blog, R.id.recommend),
-                drawerLayout
-        )
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.op, R.id.opa, R.id.job, R.id.blog, R.id.recommend), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navigationview.setupWithNavController(navController)
     }
@@ -57,7 +52,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.setting -> startActivity<SettingActivity>()
-            R.id.pact -> startActivity<PactActivity>()
         }
         return super.onOptionsItemSelected(item)
     }

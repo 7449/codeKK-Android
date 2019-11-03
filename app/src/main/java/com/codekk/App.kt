@@ -3,9 +3,10 @@ package com.codekk
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import com.squareup.leakcanary.LeakCanary
-import com.squareup.leakcanary.RefWatcher
+import com.codekk.ext.Api
 import io.reactivex.network.RxNetWork
+import okhttp3.Interceptor
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
 
 /**
@@ -13,15 +14,19 @@ import retrofit2.converter.gson.GsonConverterFactory
  */
 class App : Application() {
 
-    private lateinit var install: RefWatcher
-
     override fun onCreate() {
         super.onCreate()
         context = applicationContext
-        install = LeakCanary.install(this)
         RxNetWork.initOption {
             superBaseUrl { Api.BASE_API }
             superConverterFactory { GsonConverterFactory.create() }
+            superInterceptor {
+                val logInterceptor = HttpLoggingInterceptor()
+                logInterceptor.level = HttpLoggingInterceptor.Level.BODY
+                val arrayList = ArrayList<Interceptor>()
+                arrayList.add(logInterceptor)
+                arrayList
+            }
         }
     }
 
@@ -31,11 +36,6 @@ class App : Application() {
 
         val instance: App
             get() = context as App
-
-        operator fun get(context: Context): RefWatcher {
-            val app = context.applicationContext as App
-            return app.install
-        }
     }
 
 }

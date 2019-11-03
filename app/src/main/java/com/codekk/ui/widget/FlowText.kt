@@ -1,4 +1,4 @@
-package com.codekk.widget
+package com.codekk.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -13,9 +13,7 @@ import com.google.android.flexbox.FlexboxLayout
 /**
  * by y on 2017/5/18
  */
-
 class FlowText @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : AppCompatTextView(context, attrs, defStyleAttr) {
-
     init {
         setPadding(18, 10, 18, 10)
         val params = FlexboxLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)

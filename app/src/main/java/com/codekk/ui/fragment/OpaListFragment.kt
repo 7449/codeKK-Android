@@ -9,17 +9,16 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
-import com.codekk.*
+import com.codekk.Constant
 import com.codekk.R
-import com.codekk.mvp.model.OpaListModel
-import com.codekk.mvp.presenter.OpaListPresenterImpl
-import com.codekk.mvp.view.ViewManager
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.OpaListPresenterImpl
+import com.codekk.mvp.view.OpaListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
-import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.widget.FlowText
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.widget.FlowText
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
@@ -30,12 +29,9 @@ import org.jetbrains.anko.support.v4.startActivity
 /**
  * by y on 2017/5/18
  */
+class OpaListFragment : BaseFragment<OpaListPresenterImpl>(R.layout.fragment_opa_list), OpaListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
-class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.OpaListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
-
-    private lateinit var mAdapter: XAdapter<OpaListModel.SummaryArrayBean>
-
-    override val layoutId: Int = R.layout.fragment_opa_list
+    private lateinit var mAdapter: XAdapter<OpaListBean>
 
     override fun initActivityCreated() {
         setHasOptionsMenu(true)
@@ -47,11 +43,11 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
                 .setItemLayoutId(R.layout.item_opa_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
-                            ReadmeActivity.KEY to arrayOf(info._id, info.projectName, info.projectUrl),
+                            ReadmeActivity.KEY to arrayOf(info.id, info.projectName, info.projectUrl),
                             ReadmeActivity.TYPE to Constant.TYPE_OPA
                     )
                 }
-                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
+                .setOnBind { holder, position, entity -> onXBind(holder, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -86,7 +82,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
     }
 
     override fun onRefresh() {
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        mStatusView.success()
         page = 1
         mPresenter?.netWorkRequest(page)
     }
@@ -111,12 +107,12 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAll(entity.summaryArray)
+        mAdapter.addAll(entity.opaList)
     }
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            mStatusView.error()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.net_error)
@@ -125,7 +121,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            mStatusView.empty()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.data_empty)
@@ -133,7 +129,7 @@ class OpaListFragment : BaseStatusFragment<OpaListPresenterImpl>(), ViewManager.
     }
 
 
-    private fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: OpaListModel.SummaryArrayBean) {
+    private fun onXBind(holder: XViewHolder, summaryArrayBean: OpaListBean) {
         holder.setText(R.id.tv_project_name, TextUtils.concat("项目名称：", summaryArrayBean.title))
         holder.setText(R.id.tv_summary, summaryArrayBean.summary)
 

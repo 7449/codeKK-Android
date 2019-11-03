@@ -10,17 +10,16 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
-import com.codekk.*
+import com.codekk.Constant
 import com.codekk.R
-import com.codekk.mvp.model.OpListModel
-import com.codekk.mvp.presenter.OpListPresenterImpl
-import com.codekk.mvp.view.ViewManager
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.OpListPresenterImpl
+import com.codekk.mvp.view.OpListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
-import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.widget.FlowText
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.widget.FlowText
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
@@ -31,12 +30,9 @@ import org.jetbrains.anko.support.v4.startActivity
 /**
  * by y on 2017/5/16
  */
+class OpListFragment : BaseFragment<OpListPresenterImpl>(R.layout.fragment_op_list), SwipeRefreshLayout.OnRefreshListener, OpListView, LoadMoreRecyclerView.LoadMoreListener {
 
-class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, ViewManager.OpListView, LoadMoreRecyclerView.LoadMoreListener {
-
-    private lateinit var mAdapter: XAdapter<OpListModel.ProjectArrayBean>
-
-    override val layoutId: Int = R.layout.fragment_op_list
+    private lateinit var mAdapter: XAdapter<OpListBean>
 
     override fun initActivityCreated() {
         setHasOptionsMenu(true)
@@ -49,11 +45,11 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
                 .setItemLayoutId(R.layout.item_op_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
-                            ReadmeActivity.KEY to arrayOf(info._id, info.projectName, info.projectUrl),
+                            ReadmeActivity.KEY to arrayOf(info.id, info.projectName, info.projectUrl),
                             ReadmeActivity.TYPE to Constant.TYPE_OP
                     )
                 }
-                .setOnBind { holder, position, entity -> onXBind(holder, position, entity) }
+                .setOnBind { holder, _, entity -> onXBind(holder, entity) }
 
         refreshLayout.setOnRefreshListener(this)
         refreshLayout.post { this.onRefresh() }
@@ -89,7 +85,7 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
     }
 
     override fun onRefresh() {
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        mStatusView.success()
         page = 1
         mPresenter?.netWorkRequest(page)
     }
@@ -114,13 +110,13 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAll(entity.projectArray)
+        mAdapter.addAll(entity.opList)
     }
 
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            mStatusView.error()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.net_error)
@@ -129,14 +125,14 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            mStatusView.empty()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.data_empty)
         }
     }
 
-    private fun onXBind(holder: XViewHolder, position: Int, projectArrayBean: OpListModel.ProjectArrayBean) {
+    private fun onXBind(holder: XViewHolder, projectArrayBean: OpListBean) {
         holder.setText(R.id.tv_author_name, TextUtils.concat("添加者：", projectArrayBean.authorName))
         holder.setText(R.id.tv_author_url, TextUtils.concat("个人主页：", projectArrayBean.authorUrl))
         holder.setText(R.id.tv_project_name, TextUtils.concat("项目名称：", projectArrayBean.projectName))
@@ -159,7 +155,7 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
     }
 
 
-    private fun initTags(projectArrayBean: OpListModel.ProjectArrayBean, flexboxLayout: FlexboxLayout) {
+    private fun initTags(projectArrayBean: OpListBean, flexboxLayout: FlexboxLayout) {
         flexboxLayout.removeAllViews()
         val tags = projectArrayBean.tags
         tags?.let {

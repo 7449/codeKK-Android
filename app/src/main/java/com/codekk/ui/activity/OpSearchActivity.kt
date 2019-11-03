@@ -8,15 +8,13 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.parseAsHtml
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
-import com.codekk.*
+import com.codekk.Constant
 import com.codekk.R
-import com.codekk.mvp.model.OpSearchModel
-import com.codekk.mvp.presenter.OpSearchPresenterImpl
-import com.codekk.mvp.view.ViewManager
-import com.codekk.ui.base.BaseStatusActivity
-import com.codekk.widget.FlowText
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.OpSearchPresenterImpl
+import com.codekk.mvp.view.OpSearchView
+import com.codekk.ui.base.BaseActivity
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
@@ -28,8 +26,7 @@ import org.jetbrains.anko.startActivity
 /**
  * by y on 2017/5/17
  */
-
-class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManager.OpSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class OpSearchActivity : BaseActivity<OpSearchPresenterImpl>(R.layout.activity_search), OpSearchView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
     companion object {
         const val TEXT_KEY = "text"
@@ -37,10 +34,7 @@ class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManage
 
     private var text: String = ""
     private var page = 1
-    private lateinit var mAdapter: XAdapter<OpSearchModel.ProjectArrayBean>
-
-    override val layoutId: Int = R.layout.activity_search
-
+    private lateinit var mAdapter: XAdapter<OpListBean>
 
     override fun initBundle(bundle: Bundle) {
         super.initBundle(bundle)
@@ -59,7 +53,7 @@ class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManage
                 .setItemLayoutId(R.layout.item_search)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
-                            ReadmeActivity.TYPE to arrayOf(info._id, info.projectName, info.projectUrl),
+                            ReadmeActivity.TYPE to arrayOf(info.id, info.projectName, info.projectUrl),
                             ReadmeActivity.KEY to Constant.TYPE_OP
                     )
                 }
@@ -79,7 +73,10 @@ class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManage
                     val flexboxLayout = holder.findById<FlexboxLayout>(R.id.fl_box)
                     if (opTagBoolean()) {
                         flexboxLayout.visibility = View.VISIBLE
-                        initTags(entity, flexboxLayout)
+                        flexboxLayout.tags(entity.tags()) {
+                            startActivity<OpSearchActivity>(TEXT_KEY to it)
+                            finish()
+                        }
                     } else {
                         flexboxLayout.visibility = View.GONE
                     }
@@ -109,7 +106,7 @@ class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManage
     }
 
     override fun onRefresh() {
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        statusLayout.success()
         mPresenter?.netWorkRequest(text, page = 1)
     }
 
@@ -120,17 +117,17 @@ class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManage
         mPresenter?.netWorkRequest(text, page)
     }
 
-    override fun netWorkSuccess(entity: OpSearchModel) {
+    override fun netWorkSuccess(entity: OpListModel) {
         if (page == 1) {
             mAdapter.removeAll()
         }
         ++page
-        mAdapter.addAll(entity.projectArray)
+        mAdapter.addAll(entity.opList)
     }
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            statusLayout.error()
             mAdapter.removeAll()
         } else {
             statusLayout.snackBar(R.string.net_error)
@@ -139,27 +136,10 @@ class OpSearchActivity : BaseStatusActivity<OpSearchPresenterImpl>(), ViewManage
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            statusLayout.empty()
             mAdapter.removeAll()
         } else {
             statusLayout.snackBar(R.string.data_empty)
-        }
-    }
-
-    private fun initTags(projectArrayBean: OpSearchModel.ProjectArrayBean, flexboxLayout: FlexboxLayout) {
-        flexboxLayout.removeAllViews()
-        val tags = projectArrayBean.tags
-        tags?.let {
-            for (element in it) {
-                val tag = element.name
-                val flowText = FlowText(flexboxLayout.context)
-                flowText.text = tag
-                flexboxLayout.addView(flowText)
-                flowText.setOnClickListener {
-                    startActivity<OpSearchActivity>(TEXT_KEY to tag)
-                    finish()
-                }
-            }
         }
     }
 }

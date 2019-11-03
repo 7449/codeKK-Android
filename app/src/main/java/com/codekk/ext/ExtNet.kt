@@ -1,7 +1,6 @@
-package com.codekk
+package com.codekk.ext
 
-import com.codekk.mvp.model.*
-import com.codekk.ui.base.BaseModel
+import com.codekk.App
 import io.reactivex.Observable
 import io.reactivex.annotations.NonNull
 import io.reactivex.functions.Function
@@ -34,7 +33,7 @@ interface OpService {
     fun getOpDetail(@Path("id") id: String): Observable<BaseModel<ReadmeModel>>
 
     @GET(Api.OP_SEARCH_URL)
-    fun getOpSearch(@Query("text") text: String, @Query("page") page: Int): Observable<BaseModel<OpSearchModel>>
+    fun getOpSearch(@Query("text") text: String, @Query("page") page: Int): Observable<BaseModel<OpListModel>>
 }
 
 interface OpaService {
@@ -45,7 +44,7 @@ interface OpaService {
     fun getOpaDetail(@Path("id") id: String): Observable<BaseModel<ReadmeModel>>
 
     @GET("${Api.OPA_SEARCH_URL}{name}/page/{page}")
-    fun getOpaSearch(@Path("name") name: String, @Path("page") page: Int): Observable<BaseModel<OpaSearchModel>>
+    fun getOpaSearch(@Path("name") name: String, @Path("page") page: Int): Observable<BaseModel<OpaListModel>>
 }
 
 interface JobService {
@@ -69,7 +68,7 @@ interface RecommendService {
     fun getRecommendList(@Path("page") page: Int): Observable<BaseModel<RecommendListModel>>
 
     @GET("${Api.RECOMMEND_SEARCH_URL}{user}/page/{page}")
-    fun getRecommendSearch(@Path("user") name: String, @Path("page") page: Int): Observable<BaseModel<RecommendSearchModel>>
+    fun getRecommendSearch(@Path("user") name: String, @Path("page") page: Int): Observable<BaseModel<RecommendListModel>>
 }
 
 class NetException(code: Int, message: String) : RuntimeException() {

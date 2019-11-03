@@ -39,8 +39,8 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$logVersion"
 
-    implementation "com.squareup.leakcanary:$leakcanaryVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "com.afollestad.material-dialogs:input:$materialDialogVersion"
     implementation "com.afollestad.material-dialogs:core:$materialDialogVersion"

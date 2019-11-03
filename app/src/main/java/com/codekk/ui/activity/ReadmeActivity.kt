@@ -5,14 +5,15 @@ import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import com.android.status.layout.StatusLayout
 import com.codekk.Constant
 import com.codekk.R
-import com.codekk.mvp.model.ReadmeModel
-import com.codekk.mvp.presenter.ReadmePresenterImpl
-import com.codekk.mvp.view.ViewManager
-import com.codekk.snackBar
-import com.codekk.ui.base.BaseStatusActivity
+import com.codekk.ext.ReadmeModel
+import com.codekk.ext.empty
+import com.codekk.ext.error
+import com.codekk.ext.snackBar
+import com.codekk.mvp.presenter.impl.ReadmePresenterImpl
+import com.codekk.mvp.view.ReadmeView
+import com.codekk.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_base.*
 import kotlinx.android.synthetic.main.activity_readme.*
 import kotlinx.android.synthetic.main.layout_toolbar.*
@@ -21,8 +22,7 @@ import org.jetbrains.anko.browse
 /**
  * by y on 2017/5/16
  */
-
-class ReadmeActivity : BaseStatusActivity<ReadmePresenterImpl>(), ViewManager.ReadmeView {
+class ReadmeActivity : BaseActivity<ReadmePresenterImpl>(R.layout.activity_readme), ReadmeView {
 
     companion object {
         const val KEY = "key"
@@ -31,8 +31,6 @@ class ReadmeActivity : BaseStatusActivity<ReadmePresenterImpl>(), ViewManager.Re
 
     private lateinit var detail: Array<String>
     private var type: Int = 0
-
-    override val layoutId: Int = R.layout.activity_readme
 
     override fun onDestroy() {
         super.onDestroy()
@@ -113,12 +111,12 @@ class ReadmeActivity : BaseStatusActivity<ReadmePresenterImpl>(), ViewManager.Re
         if (!TextUtils.isEmpty(entity.content)) {
             markdownView.setMarkDownText(entity.content)
         } else {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            statusLayout.empty()
         }
     }
 
     override fun netWorkError(throwable: Throwable) {
-        setStatusViewStatus(StatusLayout.ERROR)
+        statusLayout.error()
         statusLayout.snackBar(R.string.net_error)
     }
 

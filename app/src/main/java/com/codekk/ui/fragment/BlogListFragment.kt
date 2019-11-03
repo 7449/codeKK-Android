@@ -4,19 +4,16 @@ import android.text.TextUtils
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.android.status.layout.StatusLayout
 import com.codekk.Constant
 import com.codekk.R
-import com.codekk.blogTagBoolean
-import com.codekk.mvp.model.BlogListModel
-import com.codekk.mvp.presenter.BlogListPresenterImpl
-import com.codekk.mvp.view.ViewManager
-import com.codekk.snackBar
+import com.codekk.ext.*
+import com.codekk.mvp.presenter.impl.BlogListPresenterImpl
+import com.codekk.mvp.view.BlogListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
-import com.codekk.ui.base.BaseStatusFragment
-import com.codekk.widget.FlowText
-import com.codekk.widget.LoadMoreRecyclerView
+import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.widget.FlowText
+import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
@@ -27,13 +24,9 @@ import org.jetbrains.anko.support.v4.startActivity
 /**
  * by y on 2017/5/19
  */
+class BlogListFragment : BaseFragment<BlogListPresenterImpl>(R.layout.fragment_blog_list), SwipeRefreshLayout.OnRefreshListener, BlogListView, LoadMoreRecyclerView.LoadMoreListener {
 
-class BlogListFragment : BaseStatusFragment<BlogListPresenterImpl>(),
-        SwipeRefreshLayout.OnRefreshListener, ViewManager.BlogListView, LoadMoreRecyclerView.LoadMoreListener {
-
-    private lateinit var mAdapter: XAdapter<BlogListModel.SummaryArrayBean>
-
-    override val layoutId: Int = R.layout.fragment_blog_list
+    private lateinit var mAdapter: XAdapter<BlogListBean>
 
     override fun initActivityCreated() {
         recyclerView.setHasFixedSize(true)
@@ -45,12 +38,12 @@ class BlogListFragment : BaseStatusFragment<BlogListPresenterImpl>(),
                 .setItemLayoutId(R.layout.item_blog_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
-                            ReadmeActivity.KEY to arrayOf(info._id, info.authorName),
+                            ReadmeActivity.KEY to arrayOf(info.id, info.authorName),
                             ReadmeActivity.TYPE to Constant.TYPE_BLOG
                     )
                 }
-                .setOnBind { holder, position, entity ->
-                    onXBind(holder, position, entity)
+                .setOnBind { holder, _, entity ->
+                    onXBind(holder, entity)
                 }
 
         refreshLayout.setOnRefreshListener(this)
@@ -70,7 +63,7 @@ class BlogListFragment : BaseStatusFragment<BlogListPresenterImpl>(),
 
     override fun onRefresh() {
         page = 1
-        setStatusViewStatus(StatusLayout.SUCCESS)
+        mStatusView.success()
         mPresenter?.netWorkRequest(page)
     }
 
@@ -94,12 +87,12 @@ class BlogListFragment : BaseStatusFragment<BlogListPresenterImpl>(),
             mAdapter.removeAll()
         }
         page += 1
-        mAdapter.addAll(entity.summaryArray)
+        mAdapter.addAll(entity.blogList)
     }
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.ERROR)
+            mStatusView.error()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.net_error)
@@ -108,14 +101,14 @@ class BlogListFragment : BaseStatusFragment<BlogListPresenterImpl>(),
 
     override fun noMore() {
         if (page == 1) {
-            setStatusViewStatus(StatusLayout.EMPTY)
+            mStatusView.empty()
             mAdapter.removeAll()
         } else {
             mStatusView.snackBar(R.string.data_empty)
         }
     }
 
-    private fun onXBind(holder: XViewHolder, position: Int, summaryArrayBean: BlogListModel.SummaryArrayBean) {
+    private fun onXBind(holder: XViewHolder, summaryArrayBean: BlogListBean) {
         holder.setText(R.id.tv_blog_title, summaryArrayBean.title)
         holder.setText(R.id.tv_blog_summary, summaryArrayBean.summary)
         summaryArrayBean.tagList ?: return

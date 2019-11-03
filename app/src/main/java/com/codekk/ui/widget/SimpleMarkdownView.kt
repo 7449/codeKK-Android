@@ -1,13 +1,13 @@
-package com.codekk.widget
+@file:Suppress("DEPRECATION")
+
+package com.codekk.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.widget.AbsoluteLayout
 import android.widget.ProgressBar
-
 import com.mukesh.MarkdownView
 
 /**

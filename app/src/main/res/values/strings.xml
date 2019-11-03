@@ -23,7 +23,6 @@
     <string name="net_loading">loading…</string>
     <string name="data_empty">没有数据了</string>
     <string name="empty_view_tips">数据为空,点击重试</string>
-    <string name="pact_title">开放源代码许可</string>
 
     <string name="xadapter">XAdapter</string>
     <string name="rxnetwork">rxNetWork</string>

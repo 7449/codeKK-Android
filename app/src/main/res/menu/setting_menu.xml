@@ -6,9 +6,4 @@
         android:orderInCategory="100"
         android:title="@string/setting_title"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/pact"
-        android:orderInCategory="100"
-        android:title="@string/pact_title"
-        app:showAsAction="never" />
 </menu>

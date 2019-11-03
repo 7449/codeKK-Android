@@ -1,41 +1,25 @@
 package com.codekk.mvp.view
 
-
-import com.codekk.mvp.model.*
+import com.codekk.ext.*
+import com.codekk.ui.base.BaseListView
 import com.codekk.ui.base.BaseView
 
-/**
- * by y on 2017/5/23.
- */
+interface BlogListView : BaseListView<BlogListModel>
 
-interface ViewManager {
+interface JobListView : BaseListView<JobListModel>
 
-    /**
-     * ListView 继承，实现 noMore方法
-     *
-     * @param <T>
-    </T> */
-    interface BaseListView<T> : BaseView<T> {
-        fun noMore()
-    }
+interface OpaListView : BaseListView<OpaListModel>
 
-    interface BlogListView : BaseListView<BlogListModel>
+interface OpaSearchView : BaseListView<OpaListModel>
 
-    interface JobListView : BaseListView<JobListModel>
-
-    interface OpaListView : BaseListView<OpaListModel>
-
-    interface OpaSearchView : BaseListView<OpaSearchModel>
-
-    interface ReadmeView : BaseView<ReadmeModel> {
-        fun loadWebViewUrl()
-    }
-
-    interface OpListView : BaseListView<OpListModel>
-
-    interface OpSearchView : BaseListView<OpSearchModel>
-
-    interface RecommendListView : BaseListView<RecommendListModel>
-
-    interface RecommendSearchView : BaseListView<RecommendSearchModel>
+interface ReadmeView : BaseView<ReadmeModel> {
+    fun loadWebViewUrl()
 }
+
+interface OpListView : BaseListView<OpListModel>
+
+interface OpSearchView : BaseListView<OpListModel>
+
+interface RecommendListView : BaseListView<RecommendListModel>
+
+interface RecommendSearchView : BaseListView<RecommendListModel>
