@@ -46,7 +46,7 @@ abstract class BaseStatusFragment<P : BasePresenterImpl<*, *>> : Fragment(), RxB
         initActivityCreated()
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
     }
 

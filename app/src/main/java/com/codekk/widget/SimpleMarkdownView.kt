@@ -1,4 +1,4 @@
-package com.common.widget
+package com.codekk.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -13,7 +13,6 @@ import com.mukesh.MarkdownView
 /**
  * by y on 2017/5/17
  */
-
 class SimpleMarkdownView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MarkdownView(context, attrs, defStyleAttr) {
 
     private var progressbar: ProgressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)
@@ -21,7 +20,7 @@ class SimpleMarkdownView @JvmOverloads constructor(context: Context, attrs: Attr
         private set
 
     init {
-        progressbar.layoutParams = AbsoluteLayout.LayoutParams(AbsoluteLayout.LayoutParams.MATCH_PARENT, 26, 0, 0)
+        progressbar.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, 26, 0, 0)
         addView(progressbar)
         webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, newProgress: Int) {
@@ -30,7 +29,6 @@ class SimpleMarkdownView @JvmOverloads constructor(context: Context, attrs: Attr
             }
         }
     }
-
 
     private fun newProgressBar(newProgress: Int) {
         if (newProgress == 100) {
@@ -46,7 +44,7 @@ class SimpleMarkdownView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
-        val lp = progressbar.layoutParams as AbsoluteLayout.LayoutParams
+        val lp = progressbar.layoutParams as LayoutParams
         lp.x = l
         lp.y = t
         progressbar.layoutParams = lp

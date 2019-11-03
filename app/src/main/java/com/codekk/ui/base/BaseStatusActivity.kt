@@ -5,8 +5,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import com.backlayout.SwipeBackActivity
-import com.backlayout.SwipeBackLayout
+import androidx.appcompat.app.AppCompatActivity
 import com.codekk.App
 import com.codekk.R
 import com.status.layout.OnStatusClickListener
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.layout_toolbar.*
 /**
  * by y on 2017/5/16
  */
-abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : SwipeBackActivity(), OnStatusClickListener {
+abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : AppCompatActivity(), OnStatusClickListener {
 
     override fun onEmptyClick(view: View) {
         clickNetWork()
@@ -59,9 +58,6 @@ abstract class BaseStatusActivity<P : BasePresenterImpl<*, *>> : SwipeBackActivi
         if (TextUtils.equals(javaClass.simpleName, "MainActivity")) {
             toolbar.visibility = View.GONE
         }
-        swipeBackLayout.setEnableGesture(false) // 暂不开启滑动返回,个人觉得滑动返回和Toolbar的返回键有重复作用.如果开启,要禁止MainActivity右滑返回
-        swipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT)
-        swipeBackLayout.setEdgeDp(100)
     }
 
     protected abstract fun initCreate(savedInstanceState: Bundle?)

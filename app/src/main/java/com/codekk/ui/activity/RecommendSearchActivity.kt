@@ -13,7 +13,7 @@ import com.codekk.mvp.presenter.RecommendSearchPresenterImpl
 import com.codekk.mvp.view.ViewManager
 import com.codekk.ui.base.BaseStatusActivity
 import com.codekk.utils.UIUtils
-import com.common.widget.LoadMoreRecyclerView
+import com.codekk.widget.LoadMoreRecyclerView
 import com.status.layout.StatusLayout
 import com.xadapter.OnXBindListener
 import com.xadapter.adapter.XRecyclerViewAdapter

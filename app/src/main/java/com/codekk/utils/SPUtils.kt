@@ -1,4 +1,4 @@
-package com.common.util
+package com.codekk.utils
 
 import android.content.Context
 import android.content.SharedPreferences

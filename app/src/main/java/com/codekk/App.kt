@@ -3,16 +3,12 @@ package com.codekk
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-
 import com.codekk.net.Api
-import com.codekk.net.SimpleLogInterceptor
-import com.common.util.SPUtils
+import com.codekk.utils.SPUtils
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-
 import io.reactivex.network.RxNetWork
 import io.reactivex.network.SimpleRxNetOptionFactory
-import okhttp3.Interceptor
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -29,9 +25,7 @@ class App : Application() {
         context = applicationContext
         install = LeakCanary.install(this)
         SPUtils.init(applicationContext)
-        RxNetWork.initialization(object : SimpleRxNetOptionFactory(Api.BASE_API, GsonConverterFactory.create()) {
-            override val logInterceptor: Interceptor? = SimpleLogInterceptor()
-        })
+        RxNetWork.initialization(object : SimpleRxNetOptionFactory(Api.BASE_API, GsonConverterFactory.create()) {})
     }
 
     companion object {

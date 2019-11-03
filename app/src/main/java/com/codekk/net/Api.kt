@@ -13,7 +13,7 @@ import retrofit2.http.Query
  */
 
 object Api {
-    const val BASE_API = "http://api.codekk.com/"
+    const val BASE_API = "https://api.codekk.com/"
     private const val OP_LIST_URL = "op/page/" //获取开源项目
     private const val OP_DETAIL_URL = "op/detail/" //获取单个开源项目 ReadMe
     private const val OP_SEARCH_URL = "op/search" //搜索开源项目

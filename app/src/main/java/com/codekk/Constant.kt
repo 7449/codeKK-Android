@@ -6,8 +6,6 @@ package com.codekk
 
 object Constant {
     const val OP_LIST_TYPE_ARRAY = "array"
-    const val OP_LIST_TYPE_MAP = "map"
-    const val OP_LIST_TYPE_MIX = "mix"
     const val TYPE_OP = 0
     const val TYPE_JOB = 1
     const val TYPE_BLOG = 2

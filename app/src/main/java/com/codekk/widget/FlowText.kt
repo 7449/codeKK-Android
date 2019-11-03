@@ -1,4 +1,4 @@
-package com.common.widget
+package com.codekk.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,7 +6,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import com.common.R
+import com.codekk.R
 import com.google.android.flexbox.FlexboxLayout
 
 

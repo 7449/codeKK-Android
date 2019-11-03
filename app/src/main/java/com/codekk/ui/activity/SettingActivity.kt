@@ -9,8 +9,8 @@ import com.codekk.ui.base.EmptyPresenterImpl
 import com.codekk.ui.fragment.BlogListFragment
 import com.codekk.ui.fragment.OpListFragment
 import com.codekk.ui.fragment.OpaListFragment
+import com.codekk.utils.SPUtils
 import com.codekk.utils.UIUtils
-import com.common.util.SPUtils
 import com.xadapter.adapter.multi.MultiAdapter
 import com.xadapter.adapter.multi.SimpleMultiItem
 import com.xadapter.holder.XViewHolder
@@ -82,23 +82,23 @@ private class SettingAdapter internal constructor(mDatas: List<SimpleMultiItem>)
                     when (position) {
                         0 -> {
                             SPUtils.setBoolean(SPUtils.IS_OP_TAG, !tagCheckBox.isChecked)
-                            RxBus.instance.post(OpListFragment::class.java.simpleName)
+                            RxBus.postBus(OpListFragment::class.java.simpleName, OpListFragment::class.java.simpleName)
                         }
                         1 -> {
                             SPUtils.setBoolean(SPUtils.IS_OP_URL_WEB, !tagCheckBox.isChecked)
-                            RxBus.instance.post(OpListFragment::class.java.simpleName)
+                            RxBus.postBus(OpListFragment::class.java.simpleName, OpListFragment::class.java.simpleName)
                         }
                         2 -> {
                             SPUtils.setBoolean(SPUtils.IS_OPA_TAG, !tagCheckBox.isChecked)
-                            RxBus.instance.post(OpaListFragment::class.java.simpleName)
+                            RxBus.postBus(OpaListFragment::class.java.simpleName, OpaListFragment::class.java.simpleName)
                         }
                         3 -> {
                             SPUtils.setBoolean(SPUtils.IS_OPA_URL_WEB, !tagCheckBox.isChecked)
-                            RxBus.instance.post(OpaListFragment::class.java.simpleName)
+                            RxBus.postBus(OpaListFragment::class.java.simpleName, OpaListFragment::class.java.simpleName)
                         }
                         4 -> {
                             SPUtils.setBoolean(SPUtils.IS_BLOG_TAG, !tagCheckBox.isChecked)
-                            RxBus.instance.post(BlogListFragment::class.java.simpleName)
+                            RxBus.postBus(BlogListFragment::class.java.simpleName, BlogListFragment::class.java.simpleName)
                         }
                     }
                     tagCheckBox.isChecked = !tagCheckBox.isChecked

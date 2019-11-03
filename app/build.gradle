@@ -12,36 +12,34 @@ android {
         versionCode rootProject.versionCode
         versionName rootProject.versionName
     }
+    dataBinding {
+        enabled true
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    dataBinding {
-        enabled true
-    }
 }
 
 dependencies {
-    api "androidx.appcompat:appcompat:$appcompatVersion"
-    api "com.google.android.material:material:$materialVersion"
+    implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "com.google.android.material:material:$materialVersion"
+    implementation "androidx.core:core-ktx:$ktxVersion"
+    implementation "org.jetbrains.anko:anko:$ankoVersion"
 
-    api "com.xadapter:xadapter:$xAdapterVersion"
-    api "com.ydevelop:status-layout:$statusVersion"
-    api "com.ydevelop:rxNetWork:$rxNetWorkVersion"
-    api 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    api 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
-    api 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation "com.xadapter:xadapter:$xAdapterVersion"
+    implementation "com.ydevelop:status-layout:$statusVersion"
+    implementation "com.ydevelop:rxNetWork:$rxNetWorkVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxandroidVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
-    api "com.squareup.leakcanary:$leakcanaryVersion"
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api "com.afollestad.material-dialogs:input:$materialDialogVersion"
-
-    api project(':backlayout')
-    api project(':commonLibrary')
+    implementation "com.squareup.leakcanary:$leakcanaryVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "com.afollestad.material-dialogs:input:$materialDialogVersion"
+    implementation "com.afollestad.material-dialogs:core:$materialDialogVersion"
+    implementation "com.github.mukeshsolanki:MarkdownView-Android:$markdownViewVersion"
+    implementation "com.google.android:flexbox:$flexboxVersion"
 }

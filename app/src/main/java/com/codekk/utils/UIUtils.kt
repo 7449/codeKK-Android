@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
-import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
-import androidx.core.content.ContextCompat
 import com.codekk.App
 import com.google.android.material.snackbar.Snackbar
 
@@ -23,17 +20,8 @@ object UIUtils {
     val context: Context
         get() = App.instance
 
-
-    fun getColor(@ColorRes id: Int): Int {
-        return ContextCompat.getColor(context, id)
-    }
-
     fun getString(@StringRes id: Int): String {
         return context.resources.getString(id)
-    }
-
-    fun getInflate(@LayoutRes layout: Int): View {
-        return View.inflate(context, layout, null)
     }
 
     fun startActivity(clz: Class<*>) {

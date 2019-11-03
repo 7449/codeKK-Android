@@ -19,10 +19,10 @@ import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.base.BaseStatusFragment
 import com.codekk.utils.MaterialDialogUtils
+import com.codekk.utils.SPUtils
 import com.codekk.utils.UIUtils
-import com.common.util.SPUtils
-import com.common.widget.FlowText
-import com.common.widget.LoadMoreRecyclerView
+import com.codekk.widget.FlowText
+import com.codekk.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.status.layout.StatusLayout
 import com.xadapter.OnXBindListener
@@ -65,14 +65,14 @@ class OpListFragment : BaseStatusFragment<OpListPresenterImpl>(), SwipeRefreshLa
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.search_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         activity?.let {
-            return when (item?.itemId) {
+            return when (item.itemId) {
                 R.id.open_search -> {
                     MaterialDialogUtils.openSearch(it, R.string.search_op_hint) { s -> OpSearchActivity.newInstance(s) }
                     return true

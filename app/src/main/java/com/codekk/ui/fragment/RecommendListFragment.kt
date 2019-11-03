@@ -19,7 +19,7 @@ import com.codekk.ui.activity.RecommendSearchActivity
 import com.codekk.ui.base.BaseStatusFragment
 import com.codekk.utils.MaterialDialogUtils
 import com.codekk.utils.UIUtils
-import com.common.widget.LoadMoreRecyclerView
+import com.codekk.widget.LoadMoreRecyclerView
 import com.status.layout.StatusLayout
 import com.xadapter.OnXBindListener
 import com.xadapter.adapter.XRecyclerViewAdapter
@@ -59,14 +59,14 @@ class RecommendListFragment : BaseStatusFragment<RecommendListPresenterImpl>(), 
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.search_menu, menu)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         activity?.let {
-            return when (item?.itemId) {
+            return when (item.itemId) {
                 R.id.open_search -> {
                     MaterialDialogUtils.openSearch(it, R.string.search_recommend_hint) { s -> RecommendSearchActivity.newInstance(s) }
                     return true

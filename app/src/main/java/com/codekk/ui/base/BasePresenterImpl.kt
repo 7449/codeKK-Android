@@ -1,6 +1,5 @@
 package com.codekk.ui.base
 
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.network.RxNetWork
 import io.reactivex.network.RxNetWorkListener
@@ -21,7 +20,6 @@ abstract class BasePresenterImpl<V : BaseView<M>, M>(var view: V?) : RxNetWorkLi
     }
 
     override fun onNetWorkError(e: Throwable) {
-        Log.i(javaClass.simpleName, e.toString())
         view?.hideProgress()
         view?.netWorkError(e)
     }
@@ -39,11 +37,11 @@ abstract class BasePresenterImpl<V : BaseView<M>, M>(var view: V?) : RxNetWorkLi
         RxNetWork.instance.getApi(netWorkTag ?: "", observable, this)
     }
 
-    internal fun setNetWorkTag(netWorkTag: String) {
+    fun setNetWorkTag(netWorkTag: String) {
         this.netWorkTag = netWorkTag
     }
 
-    internal fun onDestroy() {
+    fun onDestroy() {
         if (view != null)
             view = null
     }

@@ -11,7 +11,7 @@ import com.codekk.mvp.view.ViewManager
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.base.BaseStatusFragment
 import com.codekk.utils.UIUtils
-import com.common.widget.LoadMoreRecyclerView
+import com.codekk.widget.LoadMoreRecyclerView
 import com.status.layout.StatusLayout
 import com.xadapter.OnXBindListener
 import com.xadapter.adapter.XRecyclerViewAdapter

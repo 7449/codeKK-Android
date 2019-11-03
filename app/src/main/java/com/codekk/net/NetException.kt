@@ -9,7 +9,7 @@ import com.codekk.utils.UIUtils
 class NetException(code: Int, message: String) : RuntimeException() {
 
     init {
-        UIUtils.toast(code.toString() + "---" + message)
+        UIUtils.toast("$code---$message")
     }
 
 }

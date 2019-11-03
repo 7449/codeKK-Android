@@ -14,10 +14,10 @@ import com.codekk.mvp.model.OpSearchModel
 import com.codekk.mvp.presenter.OpSearchPresenterImpl
 import com.codekk.mvp.view.ViewManager
 import com.codekk.ui.base.BaseStatusActivity
+import com.codekk.utils.SPUtils
 import com.codekk.utils.UIUtils
-import com.common.util.SPUtils
-import com.common.widget.FlowText
-import com.common.widget.LoadMoreRecyclerView
+import com.codekk.widget.FlowText
+import com.codekk.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.status.layout.StatusLayout
 import com.xadapter.OnXBindListener

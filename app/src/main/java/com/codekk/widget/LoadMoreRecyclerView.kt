@@ -1,6 +1,6 @@
 @file:Suppress("ClassName")
 
-package com.common.widget
+package com.codekk.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -39,9 +39,9 @@ class LoadMoreRecyclerView @JvmOverloads constructor(context: Context, attrs: At
             }
         }
         when (layoutManagerType) {
-            LoadMoreRecyclerView.LAYOUT_MANAGER_TYPE.LINEAR -> lastVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-            LoadMoreRecyclerView.LAYOUT_MANAGER_TYPE.GRID -> lastVisibleItemPosition = (layoutManager as GridLayoutManager).findLastVisibleItemPosition()
-            LoadMoreRecyclerView.LAYOUT_MANAGER_TYPE.STAGGERED_GRID -> {
+            LAYOUT_MANAGER_TYPE.LINEAR -> lastVisibleItemPosition = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            LAYOUT_MANAGER_TYPE.GRID -> lastVisibleItemPosition = (layoutManager as GridLayoutManager).findLastVisibleItemPosition()
+            LAYOUT_MANAGER_TYPE.STAGGERED_GRID -> {
                 val staggeredGridLayoutManager = layoutManager as StaggeredGridLayoutManager
                 if (lastPositions == null) {
                     lastPositions = IntArray(staggeredGridLayoutManager.spanCount)
