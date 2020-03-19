@@ -15,7 +15,7 @@ import com.mukesh.MarkdownView
  */
 class SimpleMarkdownView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MarkdownView(context, attrs, defStyleAttr) {
 
-    private var progressbar: ProgressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)
+    private val progressbar: ProgressBar = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal)
     var isLoading = false
         private set
 

@@ -3,7 +3,6 @@ package com.codekk.ui.activity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,24 +10,25 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.codekk.R
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
+import com.codekk.databinding.ActivityMainBinding
+import com.codekk.ui.base.ViewBindActivity
 import org.jetbrains.anko.startActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ViewBindActivity<ActivityMainBinding>() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
+    override val rootBind: ActivityMainBinding
+        get() = ActivityMainBinding.inflate(layoutInflater)
+
+    private val appBarConfiguration by lazy { AppBarConfiguration(setOf(R.id.op, R.id.opa, R.id.job, R.id.blog, R.id.recommend), viewBind.drawerLayout) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_menu)
-        toolbar.setNavigationOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
+        setSupportActionBar(viewBind.toolbarRoot.toolbar)
+        viewBind.toolbarRoot.toolbar.setNavigationIcon(R.drawable.ic_menu)
+        viewBind.toolbarRoot.toolbar.setNavigationOnClickListener { viewBind.drawerLayout.openDrawer(GravityCompat.START) }
         val navController = findNavController(R.id.hostFragment)
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.op, R.id.opa, R.id.job, R.id.blog, R.id.recommend), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navigationview.setupWithNavController(navController)
+        viewBind.navigationview.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawers()
+        if (viewBind.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            viewBind.drawerLayout.closeDrawers()
         } else {
             super.onBackPressed()
         }
