@@ -5,34 +5,41 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
+import com.codekk.databinding.LayoutListBinding
 import com.codekk.ext.*
 import com.codekk.mvp.presenter.impl.BlogListPresenterImpl
 import com.codekk.mvp.view.BlogListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
-import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.base.BaseViewBindFragment
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/19
  */
-class BlogListFragment : BaseFragment<BlogListPresenterImpl>(R.layout.layout_list), SwipeRefreshLayout.OnRefreshListener, BlogListView, LoadMoreRecyclerView.LoadMoreListener {
+class BlogListFragment : BaseViewBindFragment<LayoutListBinding, BlogListPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, BlogListView, LoadMoreRecyclerView.LoadMoreListener {
 
-    private lateinit var mAdapter: XAdapter<BlogListBean>
+    private val mAdapter by lazy { XAdapter<BlogListBean>() }
+
+    override fun initViewBind(): LayoutListBinding {
+        return LayoutListBinding.inflate(layoutInflater)
+    }
+
+    override fun initPresenter(): BlogListPresenterImpl {
+        return BlogListPresenterImpl(this)
+    }
 
     override fun initActivityCreated() {
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.setLoadingListener(this) //一页显示，不用分页
-        mAdapter = XAdapter()
+        viewBind.recyclerView.setHasFixedSize(true)
+        viewBind.recyclerView.layoutManager = LinearLayoutManager(activity)
+        viewBind.recyclerView.setLoadingListener(this) //一页显示，不用分页
 
-        recyclerView.adapter = mAdapter
+        viewBind.recyclerView.adapter = mAdapter
                 .setItemLayoutId(R.layout.item_blog_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
@@ -44,40 +51,36 @@ class BlogListFragment : BaseFragment<BlogListPresenterImpl>(R.layout.layout_lis
                     onXBind(holder, entity)
                 }
 
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post { this.onRefresh() }
+        viewBind.refreshLayout.setOnRefreshListener(this)
+        viewBind.refreshLayout.post { this.onRefresh() }
     }
 
     override fun clickNetWork() {
         super.clickNetWork()
-        if (!refreshLayout.isRefreshing) {
+        if (!viewBind.refreshLayout.isRefreshing) {
             onRefresh()
         }
-    }
-
-    override fun initPresenter(): BlogListPresenterImpl? {
-        return BlogListPresenterImpl(this)
     }
 
     override fun onRefresh() {
         page = 1
         mStatusView.success()
-        mPresenter?.netWorkRequest(page)
+        mPresenter.netWorkRequest(page)
     }
 
     override fun onLoadMore() {
-        if (refreshLayout.isRefreshing) {
+        if (viewBind.refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequest(page)
+        mPresenter.netWorkRequest(page)
     }
 
     override fun showProgress() {
-        refreshLayout.isRefreshing = true
+        viewBind.refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        viewBind.refreshLayout.isRefreshing = false
     }
 
     override fun netWorkSuccess(entity: BlogListModel) {

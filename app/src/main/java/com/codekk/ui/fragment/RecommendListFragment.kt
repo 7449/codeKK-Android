@@ -11,33 +11,40 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
+import com.codekk.databinding.LayoutListBinding
 import com.codekk.ext.*
 import com.codekk.mvp.presenter.impl.RecommendPresenterImpl
 import com.codekk.mvp.view.RecommendListView
 import com.codekk.ui.activity.ReadmeActivity
 import com.codekk.ui.activity.RecommendSearchActivity
-import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.base.BaseViewBindFragment
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18
  */
-class RecommendListFragment : BaseFragment<RecommendPresenterImpl>(R.layout.layout_list), RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
+class RecommendListFragment : BaseViewBindFragment<LayoutListBinding, RecommendPresenterImpl>(), RecommendListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
-    private lateinit var mAdapter: XAdapter<RecommendListBean>
+    private val mAdapter by lazy { XAdapter<RecommendListBean>() }
+
+    override fun initViewBind(): LayoutListBinding {
+        return LayoutListBinding.inflate(layoutInflater)
+    }
+
+    override fun initPresenter(): RecommendPresenterImpl {
+        return RecommendPresenterImpl(this)
+    }
 
     override fun initActivityCreated() {
         setHasOptionsMenu(true)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.setLoadingListener(this)
-        mAdapter = XAdapter()
-        recyclerView.adapter = mAdapter
+        viewBind.recyclerView.setHasFixedSize(true)
+        viewBind.recyclerView.layoutManager = LinearLayoutManager(activity)
+        viewBind.recyclerView.setLoadingListener(this)
+        viewBind.recyclerView.adapter = mAdapter
                 .setItemLayoutId(R.layout.item_recommend_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
@@ -47,14 +54,14 @@ class RecommendListFragment : BaseFragment<RecommendPresenterImpl>(R.layout.layo
                 }
                 .setOnBind { holder, position, entity -> onXBind(holder, entity) }
 
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post { this.onRefresh() }
+        viewBind.refreshLayout.setOnRefreshListener(this)
+        viewBind.refreshLayout.post { this.onRefresh() }
 
     }
 
     override fun clickNetWork() {
         super.clickNetWork()
-        if (!refreshLayout.isRefreshing) {
+        if (!viewBind.refreshLayout.isRefreshing) {
             onRefresh()
         }
     }
@@ -80,29 +87,25 @@ class RecommendListFragment : BaseFragment<RecommendPresenterImpl>(R.layout.layo
         } ?: return super.onOptionsItemSelected(item)
     }
 
-    override fun initPresenter(): RecommendPresenterImpl? {
-        return RecommendPresenterImpl(this)
-    }
-
     override fun onRefresh() {
         mStatusView.success()
         page = 1
-        mPresenter?.netWorkRequestList(page)
+        mPresenter.netWorkRequestList(page)
     }
 
     override fun onLoadMore() {
-        if (refreshLayout.isRefreshing) {
+        if (viewBind.refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequestList(page)
+        mPresenter.netWorkRequestList(page)
     }
 
     override fun showProgress() {
-        refreshLayout.isRefreshing = true
+        viewBind.refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        viewBind.refreshLayout.isRefreshing = false
     }
 
     override fun netWorkSuccess(entity: RecommendListModel) {

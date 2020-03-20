@@ -17,15 +17,19 @@ import io.reactivex.network.RxBusCallBack
 abstract class BaseFragment<P : BasePresenterImpl<*, *>>(val layout: Int) : Fragment(), RxBusCallBack<Any> {
 
     protected lateinit var mStatusView: StatusLayout
-    protected var mPresenter: P? = null
+    protected val mPresenter by lazy { initPresenter() }
     protected var page: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!::mStatusView.isInitialized) {
-            mStatusView = StatusLayout(container!!.context)
+            mStatusView = StatusLayout(inflater.context)
             mStatusView.addEmptyView(R.layout.layout_status_empty)
             mStatusView.addErrorView(R.layout.layout_status_error)
-            mStatusView.addSuccessView(layout)
+            if (layout != View.NO_ID) {
+                mStatusView.addSuccessView(layout)
+            } else {
+                viewBindCreate(savedInstanceState)
+            }
             mStatusView.success()
             mStatusView
                     .OnEmptyClick { clickNetWork() }
@@ -37,13 +41,15 @@ abstract class BaseFragment<P : BasePresenterImpl<*, *>>(val layout: Int) : Frag
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        mPresenter = initPresenter()
         initActivityCreated()
+    }
+
+    protected open fun viewBindCreate(savedInstanceState: Bundle?) {
     }
 
     protected abstract fun initActivityCreated()
 
-    protected abstract fun initPresenter(): P?
+    protected abstract fun initPresenter(): P
 
     protected open fun clickNetWork() {}
 
@@ -54,7 +60,6 @@ abstract class BaseFragment<P : BasePresenterImpl<*, *>>(val layout: Int) : Frag
     override fun onDestroyView() {
         super.onDestroyView()
         RxBus.instance.unregister(javaClass.simpleName)
-        mPresenter?.onDestroy()
-        mPresenter = null
+        mPresenter.onDestroy()
     }
 }

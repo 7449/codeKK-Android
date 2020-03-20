@@ -9,38 +9,43 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
+import com.codekk.databinding.LayoutListBinding
 import com.codekk.ext.*
 import com.codekk.mvp.presenter.impl.OpaPresenterImpl
 import com.codekk.mvp.view.OpaListView
-import com.codekk.ui.base.BaseActivity
+import com.codekk.ui.base.BaseViewBindActivity
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.layout_list.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
 import org.jetbrains.anko.startActivity
 
 /**
  * by y on 2017/5/18.
  */
-class OpaSearchActivity : BaseActivity<OpaPresenterImpl>(R.layout.layout_list), OpaListView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+class OpaSearchActivity : BaseViewBindActivity<LayoutListBinding, OpaPresenterImpl>(), OpaListView, LoadMoreRecyclerView.LoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private var text: String = ""
+    private val text by lazy { bundle?.getString(TEXT_KEY, "").orEmpty() }
     private var page = 1
 
-    private lateinit var mAdapter: XAdapter<OpaListBean>
+    private val mAdapter by lazy { XAdapter<OpaListBean>() }
+
+    override fun initViewBind(): LayoutListBinding {
+        return LayoutListBinding.inflate(layoutInflater)
+    }
+
+    override fun initPresenter(): OpaPresenterImpl {
+        return OpaPresenterImpl(this)
+    }
 
     override fun initCreate(savedInstanceState: Bundle?) {
-        toolbar.title = text
-        setSupportActionBar(toolbar)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        mAdapter = XAdapter()
+        baseViewBind.toolbarRoot.toolbar.title = text
+        setSupportActionBar(baseViewBind.toolbarRoot.toolbar)
+        viewBind.recyclerView.setHasFixedSize(true)
+        viewBind.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        recyclerView.adapter = mAdapter
+        viewBind.recyclerView.adapter = mAdapter
                 .setItemLayoutId(R.layout.item_opa_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
@@ -50,44 +55,35 @@ class OpaSearchActivity : BaseActivity<OpaPresenterImpl>(R.layout.layout_list), 
                 }
                 .setOnBind { holder, _, entity -> onXBind(holder, entity) }
 
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post { this.onRefresh() }
-    }
-
-    override fun initBundle(bundle: Bundle) {
-        super.initBundle(bundle)
-        text = bundle.getString(TEXT_KEY, "")
+        viewBind.refreshLayout.setOnRefreshListener(this)
+        viewBind.refreshLayout.post { this.onRefresh() }
     }
 
     override fun clickNetWork() {
         super.clickNetWork()
-        if (!refreshLayout.isRefreshing) {
+        if (!viewBind.refreshLayout.isRefreshing) {
             onRefresh()
         }
     }
 
-    override fun initPresenter(): OpaPresenterImpl? {
-        return OpaPresenterImpl(this)
-    }
-
     override fun showProgress() {
-        refreshLayout.isRefreshing = true
+        viewBind.refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        viewBind.refreshLayout.isRefreshing = false
     }
 
     override fun onRefresh() {
-        statusLayout.success()
-        mPresenter?.netWorkRequestSearch(text, page = 1)
+        baseViewBind.statusLayout.success()
+        mPresenter.netWorkRequestSearch(text, page = 1)
     }
 
     override fun onLoadMore() {
-        if (refreshLayout.isRefreshing) {
+        if (viewBind.refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequestSearch(text, page)
+        mPresenter.netWorkRequestSearch(text, page)
     }
 
     override fun netWorkSuccess(entity: OpaListModel) {
@@ -100,19 +96,19 @@ class OpaSearchActivity : BaseActivity<OpaPresenterImpl>(R.layout.layout_list), 
 
     override fun netWorkError(throwable: Throwable) {
         if (page == 1) {
-            statusLayout.error()
+            baseViewBind.statusLayout.error()
             mAdapter.removeAll()
         } else {
-            statusLayout.snackBar(R.string.net_error)
+            baseViewBind.statusLayout.snackBar(R.string.net_error)
         }
     }
 
     override fun noMore() {
         if (page == 1) {
-            statusLayout.empty()
+            baseViewBind.statusLayout.empty()
             mAdapter.removeAll()
         } else {
-            statusLayout.snackBar(R.string.data_empty)
+            baseViewBind.statusLayout.snackBar(R.string.data_empty)
         }
     }
 

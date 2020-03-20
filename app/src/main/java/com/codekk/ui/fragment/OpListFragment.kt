@@ -1,6 +1,5 @@
 package com.codekk.ui.fragment
 
-import android.os.Bundle
 import android.text.TextUtils
 import android.text.util.Linkify
 import android.view.Menu
@@ -14,24 +13,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
+import com.codekk.databinding.LayoutListBinding
 import com.codekk.ext.*
 import com.codekk.mvp.presenter.impl.OpPresenterImpl
 import com.codekk.mvp.view.OpListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
-import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.base.BaseViewBindFragment
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/16
  */
-class OpListFragment : BaseFragment<OpPresenterImpl>(R.layout.layout_list), SwipeRefreshLayout.OnRefreshListener, OpListView, LoadMoreRecyclerView.LoadMoreListener {
+class OpListFragment : BaseViewBindFragment<LayoutListBinding, OpPresenterImpl>(), SwipeRefreshLayout.OnRefreshListener, OpListView, LoadMoreRecyclerView.LoadMoreListener {
 
     companion object {
         fun get(text: String): OpListFragment {
@@ -43,36 +42,36 @@ class OpListFragment : BaseFragment<OpPresenterImpl>(R.layout.layout_list), Swip
         }
     }
 
-    private lateinit var mAdapter: XAdapter<OpListBean>
-    private var searchText: String = ""
+    private val mAdapter by lazy { XAdapter<OpListBean>() }
+    private val searchText by lazy { arguments?.getString(OpSearchActivity.TEXT_KEY, "").orEmpty() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let { searchText = it.getString(OpSearchActivity.TEXT_KEY, "") }
+    override fun initViewBind(): LayoutListBinding {
+        return LayoutListBinding.inflate(layoutInflater)
     }
+
+    override fun initPresenter(): OpPresenterImpl = OpPresenterImpl(this)
 
     override fun initActivityCreated() {
         setHasOptionsMenu(true)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.setLoadingListener(this)
-        mAdapter = XAdapter()
+        viewBind.recyclerView.setHasFixedSize(true)
+        viewBind.recyclerView.layoutManager = LinearLayoutManager(activity)
+        viewBind.recyclerView.setLoadingListener(this)
 
-        recyclerView.adapter = mAdapter
+        viewBind.recyclerView.adapter = mAdapter
                 .setItemLayoutId(R.layout.item_op_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(ReadmeActivity.KEY to arrayOf(info.id, info.projectName, info.projectUrl), ReadmeActivity.TYPE to Constant.TYPE_OP)
                 }
                 .setOnBind { holder, _, entity -> onXBind(holder, entity) }
 
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post { this.onRefresh() }
-        activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { recyclerView.smoothScrollToPosition(0) }
+        viewBind.refreshLayout.setOnRefreshListener(this)
+        viewBind.refreshLayout.post { this.onRefresh() }
+        activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { viewBind.recyclerView.smoothScrollToPosition(0) }
     }
 
     override fun clickNetWork() {
         super.clickNetWork()
-        if (!refreshLayout.isRefreshing) {
+        if (!viewBind.refreshLayout.isRefreshing) {
             onRefresh()
         }
     }
@@ -96,35 +95,33 @@ class OpListFragment : BaseFragment<OpPresenterImpl>(R.layout.layout_list), Swip
         } ?: return super.onOptionsItemSelected(item)
     }
 
-    override fun initPresenter(): OpPresenterImpl? = OpPresenterImpl(this)
-
     override fun onRefresh() {
         mStatusView.success()
         page = 1
         if (searchText.isEmpty()) {
-            mPresenter?.netWorkRequestList(page)
+            mPresenter.netWorkRequestList(page)
         } else {
-            mPresenter?.netWorkRequestSearch(searchText, page)
+            mPresenter.netWorkRequestSearch(searchText, page)
         }
     }
 
     override fun onLoadMore() {
-        if (refreshLayout.isRefreshing) {
+        if (viewBind.refreshLayout.isRefreshing) {
             return
         }
         if (searchText.isEmpty()) {
-            mPresenter?.netWorkRequestList(page)
+            mPresenter.netWorkRequestList(page)
         } else {
-            mPresenter?.netWorkRequestSearch(searchText, page)
+            mPresenter.netWorkRequestSearch(searchText, page)
         }
     }
 
     override fun showProgress() {
-        refreshLayout.isRefreshing = true
+        viewBind.refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        viewBind.refreshLayout.isRefreshing = false
     }
 
     override fun netWorkSuccess(entity: OpListModel) {

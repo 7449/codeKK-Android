@@ -11,34 +11,41 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.codekk.Constant
 import com.codekk.R
+import com.codekk.databinding.LayoutListBinding
 import com.codekk.ext.*
 import com.codekk.mvp.presenter.impl.OpaPresenterImpl
 import com.codekk.mvp.view.OpaListView
 import com.codekk.ui.activity.OpSearchActivity
 import com.codekk.ui.activity.ReadmeActivity
-import com.codekk.ui.base.BaseFragment
+import com.codekk.ui.base.BaseViewBindFragment
 import com.codekk.ui.widget.LoadMoreRecyclerView
 import com.google.android.flexbox.FlexboxLayout
 import com.xadapter.*
 import com.xadapter.adapter.XAdapter
 import com.xadapter.holder.XViewHolder
-import kotlinx.android.synthetic.main.layout_list.*
 import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * by y on 2017/5/18
  */
-class OpaListFragment : BaseFragment<OpaPresenterImpl>(R.layout.layout_list), OpaListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
+class OpaListFragment : BaseViewBindFragment<LayoutListBinding, OpaPresenterImpl>(), OpaListView, SwipeRefreshLayout.OnRefreshListener, LoadMoreRecyclerView.LoadMoreListener {
 
-    private lateinit var mAdapter: XAdapter<OpaListBean>
+    private val mAdapter by lazy { XAdapter<OpaListBean>() }
+
+    override fun initViewBind(): LayoutListBinding {
+        return LayoutListBinding.inflate(layoutInflater)
+    }
+
+    override fun initPresenter(): OpaPresenterImpl {
+        return OpaPresenterImpl(this)
+    }
 
     override fun initActivityCreated() {
         setHasOptionsMenu(true)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.setLoadingListener(this)  // 太少了,注掉上拉加载
-        mAdapter = XAdapter()
-        recyclerView.adapter = mAdapter
+        viewBind.recyclerView.setHasFixedSize(true)
+        viewBind.recyclerView.layoutManager = LinearLayoutManager(activity)
+        viewBind.recyclerView.setLoadingListener(this)  // 太少了,注掉上拉加载
+        viewBind.recyclerView.adapter = mAdapter
                 .setItemLayoutId(R.layout.item_opa_list)
                 .setOnItemClickListener { _, _, info ->
                     startActivity<ReadmeActivity>(
@@ -48,13 +55,13 @@ class OpaListFragment : BaseFragment<OpaPresenterImpl>(R.layout.layout_list), Op
                 }
                 .setOnBind { holder, position, entity -> onXBind(holder, entity) }
 
-        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post { this.onRefresh() }
+        viewBind.refreshLayout.setOnRefreshListener(this)
+        viewBind.refreshLayout.post { this.onRefresh() }
     }
 
     override fun clickNetWork() {
         super.clickNetWork()
-        if (!refreshLayout.isRefreshing) {
+        if (!viewBind.refreshLayout.isRefreshing) {
             onRefresh()
         }
     }
@@ -76,29 +83,25 @@ class OpaListFragment : BaseFragment<OpaPresenterImpl>(R.layout.layout_list), Op
         } ?: return super.onOptionsItemSelected(item)
     }
 
-    override fun initPresenter(): OpaPresenterImpl? {
-        return OpaPresenterImpl(this)
-    }
-
     override fun onRefresh() {
         mStatusView.success()
         page = 1
-        mPresenter?.netWorkRequestList(page)
+        mPresenter.netWorkRequestList(page)
     }
 
     override fun onLoadMore() {
-        if (refreshLayout.isRefreshing) {
+        if (viewBind.refreshLayout.isRefreshing) {
             return
         }
-        mPresenter?.netWorkRequestList(page)
+        mPresenter.netWorkRequestList(page)
     }
 
     override fun showProgress() {
-        refreshLayout.isRefreshing = true
+        viewBind.refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        viewBind.refreshLayout.isRefreshing = false
     }
 
     override fun netWorkSuccess(entity: OpaListModel) {
@@ -145,7 +148,6 @@ class OpaListFragment : BaseFragment<OpaPresenterImpl>(R.layout.layout_list), Op
             flexboxLayout.visibility = View.GONE
         }
     }
-
 
     override fun onBusNext(entity: Any) {
         mAdapter.notifyDataSetChanged()

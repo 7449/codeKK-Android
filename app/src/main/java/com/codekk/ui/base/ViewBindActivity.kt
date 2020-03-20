@@ -6,13 +6,13 @@ import androidx.viewbinding.ViewBinding
 
 abstract class ViewBindActivity<BIND : ViewBinding> : AppCompatActivity() {
 
-    protected val viewBind by lazy { rootBind }
+    protected val viewBind by lazy { initViewBind() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(viewBind.root)
     }
 
-    abstract val rootBind: BIND
+    protected abstract fun initViewBind(): BIND
 
 }

@@ -6,7 +6,7 @@
 
 2.BK是自动生成的文件,ViewBind也是,不过是由IDE深度集成支持的
 
-3.和DataBinding比较,个人觉得区别不大...仅仅是xml文件不试用标签的形式而已,至少目前是这样的...
+3.和DataBinding比较,个人觉得区别不大...仅仅是xml文件不使用标签的形式而已,至少目前是这样的...
 
 4.和kotlin一样,IDE深度集成的优点和BK相比就是就算不重新Build也支持viewBind.id,命名上也是驼峰式命名,如果不适应kotlin在xml中id命名驼峰式,可以用ViewBind
 

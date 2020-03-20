@@ -2,27 +2,30 @@ package com.codekk.ui.activity
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import com.codekk.R
+import com.codekk.databinding.LayoutFragmentBinding
+import com.codekk.ui.base.ViewBindActivity
 import com.codekk.ui.fragment.OpListFragment
-import kotlinx.android.synthetic.main.layout_toolbar.*
 
 /**
  * by y on 2017/5/17
  */
-class OpSearchActivity : AppCompatActivity() {
+class OpSearchActivity : ViewBindActivity<LayoutFragmentBinding>() {
+
     companion object {
         const val TEXT_KEY = "text"
     }
 
-    private var text: String = ""
+    private val text by lazy { intent?.extras?.getString(TEXT_KEY, "").orEmpty() }
+
+    override fun initViewBind(): LayoutFragmentBinding {
+        return LayoutFragmentBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_fragment)
-        text = intent?.extras?.getString(TEXT_KEY, "") ?: ""
-        toolbar.title = text
-        setSupportActionBar(toolbar)
+        viewBind.toolbarRoot.toolbar.title = text
+        setSupportActionBar(viewBind.toolbarRoot.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportFragmentManager.beginTransaction().replace(R.id.fragment, OpListFragment.get(text)).commitAllowingStateLoss()
     }

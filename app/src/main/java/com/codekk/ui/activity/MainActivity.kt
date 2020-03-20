@@ -16,10 +16,11 @@ import org.jetbrains.anko.startActivity
 
 class MainActivity : ViewBindActivity<ActivityMainBinding>() {
 
-    override val rootBind: ActivityMainBinding
-        get() = ActivityMainBinding.inflate(layoutInflater)
-
     private val appBarConfiguration by lazy { AppBarConfiguration(setOf(R.id.op, R.id.opa, R.id.job, R.id.blog, R.id.recommend), viewBind.drawerLayout) }
+
+    override fun initViewBind(): ActivityMainBinding {
+        return ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

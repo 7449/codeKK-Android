@@ -2,32 +2,34 @@ package com.codekk.ui.activity
 
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.codekk.R
+import com.codekk.databinding.ActivitySettingBinding
 import com.codekk.ext.*
+import com.codekk.ui.base.ViewBindActivity
 import com.xadapter.*
 import com.xadapter.adapter.XMultiAdapter
-import kotlinx.android.synthetic.main.activity_setting.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
 
 /**
  * by y on 2017/5/18
  */
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : ViewBindActivity<ActivitySettingBinding>() {
+
+    override fun initViewBind(): ActivitySettingBinding {
+        return ActivitySettingBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
-        toolbar.setTitle(R.string.setting_title)
-        setSupportActionBar(toolbar)
+        viewBind.toolbarRoot.toolbar.setTitle(R.string.setting_title)
+        setSupportActionBar(viewBind.toolbarRoot.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(recyclerView.context)
+        viewBind.recyclerView.setHasFixedSize(true)
+        viewBind.recyclerView.layoutManager = LinearLayoutManager(applicationContext)
 
-        recyclerView
+        viewBind.recyclerView
                 .attachMultiAdapter(XMultiAdapter(initItem()))
                 .setItemLayoutId { viewType ->
                     when (viewType) {

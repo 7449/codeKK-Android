@@ -7,36 +7,32 @@ import android.view.Menu
 import android.view.MenuItem
 import com.codekk.Constant
 import com.codekk.R
+import com.codekk.databinding.ActivityReadmeBinding
 import com.codekk.ext.ReadmeModel
 import com.codekk.ext.empty
 import com.codekk.ext.error
 import com.codekk.ext.snackBar
 import com.codekk.mvp.presenter.impl.ReadmePresenterImpl
 import com.codekk.mvp.view.ReadmeView
-import com.codekk.ui.base.BaseActivity
-import kotlinx.android.synthetic.main.activity_base.*
-import kotlinx.android.synthetic.main.activity_readme.*
-import kotlinx.android.synthetic.main.layout_toolbar.*
+import com.codekk.ui.base.BaseViewBindActivity
 import org.jetbrains.anko.browse
 
 /**
  * by y on 2017/5/16
  */
-class ReadmeActivity : BaseActivity<ReadmePresenterImpl>(R.layout.activity_readme), ReadmeView {
+class ReadmeActivity : BaseViewBindActivity<ActivityReadmeBinding, ReadmePresenterImpl>(), ReadmeView {
 
     companion object {
         const val KEY = "key"
         const val TYPE = "type"
     }
 
-    private lateinit var detail: Array<String>
-    private var type: Int = 0
+    private val detail by lazy { bundle?.getStringArray(KEY).orEmpty() }
+    private val type by lazy { bundle?.getInt(TYPE) ?: 0 }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (markdownView != null) {
-            markdownView.destroy()
-        }
+        viewBind.markdownView.destroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,10 +46,10 @@ class ReadmeActivity : BaseActivity<ReadmePresenterImpl>(R.layout.activity_readm
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.refresh_url -> {
-                if (markdownView.isLoading) {
-                    markdownView.reload()
+                if (viewBind.markdownView.isLoading) {
+                    viewBind.markdownView.reload()
                 } else {
-                    statusLayout.snackBar(R.string.net_loading)
+                    baseViewBind.statusLayout.snackBar(R.string.net_loading)
                 }
                 true
             }
@@ -65,64 +61,60 @@ class ReadmeActivity : BaseActivity<ReadmePresenterImpl>(R.layout.activity_readm
         }
     }
 
-    override fun initBundle(bundle: Bundle) {
-        super.initBundle(bundle)
-        detail = bundle.getStringArray(KEY) ?: return
-        type = bundle.getInt(TYPE)
+    override fun initViewBind(): ActivityReadmeBinding {
+        return ActivityReadmeBinding.inflate(layoutInflater)
+    }
+
+    override fun initPresenter(): ReadmePresenterImpl {
+        return ReadmePresenterImpl(this)
     }
 
     override fun initCreate(savedInstanceState: Bundle?) {
-        refreshLayout.isEnabled = false
-        mPresenter?.netWorkRequest(detail[0], type)
-        toolbar.title = detail[1]
-        setSupportActionBar(toolbar)
+        viewBind.refreshLayout.isEnabled = false
+        mPresenter.netWorkRequest(detail[0], type)
+        baseViewBind.toolbarRoot.toolbar.title = detail[1]
+        setSupportActionBar(baseViewBind.toolbarRoot.toolbar)
     }
 
     override fun clickNetWork() {
         super.clickNetWork()
-        if (!refreshLayout.isRefreshing) {
-            mPresenter?.netWorkRequest(detail[0], type)
+        if (!viewBind.refreshLayout.isRefreshing) {
+            mPresenter.netWorkRequest(detail[0], type)
         }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (event.action == KeyEvent.ACTION_DOWN) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && markdownView.canGoBack()) {
-                markdownView.goBack()
+            if (keyCode == KeyEvent.KEYCODE_BACK && viewBind.markdownView.canGoBack()) {
+                viewBind.markdownView.goBack()
                 return true
             }
         }
         return super.onKeyDown(keyCode, event)
     }
 
-    override fun initPresenter(): ReadmePresenterImpl? {
-        return ReadmePresenterImpl(this)
-    }
-
     override fun showProgress() {
-        refreshLayout.isRefreshing = true
+        viewBind.refreshLayout.isRefreshing = true
     }
 
     override fun hideProgress() {
-        refreshLayout.isRefreshing = false
+        viewBind.refreshLayout.isRefreshing = false
     }
 
     override fun netWorkSuccess(entity: ReadmeModel) {
         if (!TextUtils.isEmpty(entity.content)) {
-            markdownView.setMarkDownText(entity.content)
+            viewBind.markdownView.setMarkDownText(entity.content)
         } else {
-            statusLayout.empty()
+            baseViewBind.statusLayout.empty()
         }
     }
 
     override fun netWorkError(throwable: Throwable) {
-        statusLayout.error()
-        statusLayout.snackBar(R.string.net_error)
+        baseViewBind.statusLayout.error()
+        baseViewBind.statusLayout.snackBar(R.string.net_error)
     }
 
     override fun loadWebViewUrl() {
-        if (markdownView != null) {
-            markdownView.loadUrl(detail[2])
-        }
+        viewBind.markdownView.loadUrl(detail[2])
     }
 }
