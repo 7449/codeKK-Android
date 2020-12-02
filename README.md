@@ -1,5 +1,3 @@
-![](https://github.com/7449/codeKK-Android/blob/master/screenshots/codekk_image.gif)
-
 ## ViewBind 使用
 
 1.必须为include标签命名一个id,而include里面的View使用则是viewBind.includeBind.id,麻烦
@@ -15,6 +13,8 @@
 6.kotlin的问题是如果xml多了命名有重复,容易引入错误的布局类,而ViewBind不存在这种情况,因为它是为每个布局文件都生成了一个类
 
 目前已完成
+
+![](https://github.com/7449/codeKK-Android/blob/master/screenshots/codekk_image.gif)
 
 * 查看开源项目，搜索开源项目
 
